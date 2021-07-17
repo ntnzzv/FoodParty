@@ -197,9 +197,10 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/typeIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/sweet_icon"
+        android:src="@drawable/undefined_icon"
         android:tint="@color/cardview_light_background"
         app:layout_anchor="@id/app_bar_details"
         app:layout_anchorGravity="bottom|center" />

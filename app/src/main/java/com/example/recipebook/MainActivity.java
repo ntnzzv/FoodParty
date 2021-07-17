@@ -22,8 +22,7 @@ import static com.example.recipebook.Constants.RECIPES_DB_NAME;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    FirebaseService firebaseService;
+    FirebaseService fbs;
     DatabaseReference recipesDBReference;
     private RecipesAdapter adapter;
 
@@ -32,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firebaseService=FirebaseService.getInstance();
-        recipesDBReference=firebaseService.getSpecificDBReference(RECIPES_DB_NAME);
+        fbs = FirebaseService.getInstance();
+        recipesDBReference = fbs.getDBReference(RECIPES_DB_NAME);
         setRecyclerViewAdapter();
         recipesDBReference.addChildEventListener(new RecipeEventListener());
     }
@@ -50,14 +49,13 @@ public class MainActivity extends AppCompatActivity {
         adapter.stopListening();
     }
 
-
     private void setRecyclerViewAdapter() {
         RecyclerView rv = findViewById(R.id.rv_recipes_list);
         rv.setLayoutManager(new LinearLayoutManager(this));
         FirebaseRecyclerOptions<Recipe> options = new FirebaseRecyclerOptions.Builder<Recipe>()
                 .setQuery(recipesDBReference, Recipe.class)
                 .build();
-        adapter = new RecipesAdapter(this,options);
+        adapter = new RecipesAdapter(this, options);
         rv.setAdapter(adapter);
     }
 
@@ -88,14 +86,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             Recipe recipe = dataSnapshot.getValue(Recipe.class);
-
             recipe.setId(dataSnapshot.getKey());
             adapter.recipes.add(recipe);
         }
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
         }
 
         @Override
@@ -107,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
         }
 
         @Override

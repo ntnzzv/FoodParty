@@ -9,11 +9,10 @@ public class Recipe implements Serializable {
     private String recipeName;
     private String description;
     private String imageUrl;
-
-
-    //    private String longDescription;
     private ArrayList<String> ingredients = new ArrayList<>();
-    private ArrayList<Ingredient> ingredients2 = new ArrayList<>();
+    private ArrayList<String> instructions = new ArrayList<>();
+    private String type;
+   // private ArrayList<Ingredient> ingredients2 = new ArrayList<>();
 
     public Recipe() {
     }
@@ -34,27 +33,12 @@ public class Recipe implements Serializable {
         this.description = description;
     }
 
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Recipe)) return false;
-        Recipe recipe = (Recipe) o;
-        return getId().equals(recipe.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
     }
 
     public String getImageUrl() {
@@ -73,12 +57,39 @@ public class Recipe implements Serializable {
         this.ingredients = ingredients;
     }
 
-    public ArrayList<Ingredient> getIngredients2() {
-        return ingredients2;
+    public ArrayList<String> getInstructions() {
+        return instructions;
+    }
+    public void setInstructions(ArrayList<String> instructions) {
+        this.instructions = instructions;
     }
 
-    public void setIngredients2(ArrayList<Ingredient> ingredients2) {
-        this.ingredients2 = ingredients2;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Recipe)) return false;
+        Recipe recipe = (Recipe) o;
+        return getId().equals(recipe.getId());
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+//    public ArrayList<Ingredient> getIngredients2() {
+//        return ingredients2;
+//    }
+//
+//    public void setIngredients2(ArrayList<Ingredient> ingredients2) {
+//        this.ingredients2 = ingredients2;
+//    }
 
 }
