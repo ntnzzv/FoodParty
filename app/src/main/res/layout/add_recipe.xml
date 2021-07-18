@@ -90,12 +90,23 @@
                 android:inputType="textPersonName"
                 android:text="Name" />
 
-            <Button
+           <!-- <Button
                 android:id="@+id/btn_addIngridient"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Add Ingridient" />
+                android:text="Add Ingridient"
+
+
+                />-->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Text button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                />
+
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
