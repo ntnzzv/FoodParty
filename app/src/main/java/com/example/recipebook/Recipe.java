@@ -12,57 +12,69 @@ public class Recipe implements Serializable {
     private ArrayList<String> ingredients = new ArrayList<>();
     private ArrayList<String> instructions = new ArrayList<>();
     private String type;
-   // private ArrayList<Ingredient> ingredients2 = new ArrayList<>();
 
     public Recipe() {
     }
 
-    public String getRecipeName() {
-        return recipeName;
+    /*------------------------SETTERS---------------------------------*/
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setRecipeName(String recipeName) {
         this.recipeName = recipeName;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
+    public void setIngredients(ArrayList<String> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setInstructions(ArrayList<String> instructions) {
+        this.instructions = instructions;
+    }
+
+    /*------------------------GETTERS---------------------------------*/
+    public String getId() {
+        return id;
+    }
+
+    public String getRecipeName() {
+        return recipeName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     public ArrayList<String> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(ArrayList<String> ingredients) {
-        this.ingredients = ingredients;
+    public String getType() {
+        return type;
     }
 
     public ArrayList<String> getInstructions() {
         return instructions;
     }
-    public void setInstructions(ArrayList<String> instructions) {
-        this.instructions = instructions;
-    }
+
+    /*----------------------------------------------------------------*/
 
     @Override
     public boolean equals(Object o) {
@@ -77,19 +89,5 @@ public class Recipe implements Serializable {
         return Objects.hash(getId());
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-//    public ArrayList<Ingredient> getIngredients2() {
-//        return ingredients2;
-//    }
-//
-//    public void setIngredients2(ArrayList<Ingredient> ingredients2) {
-//        this.ingredients2 = ingredients2;
-//    }
 
 }

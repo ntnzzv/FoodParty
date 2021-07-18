@@ -10,4 +10,6 @@
     <string name="added_msg">Show only my recipes</string>
     <string name="settings">settings</string>
     <string name="search">Search</string>
+    <string name="preferences_file">com.example.recipebook_preferences</string>
+    <string name="favorites">favorites</string>
 </resources>

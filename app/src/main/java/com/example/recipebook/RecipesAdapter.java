@@ -1,6 +1,5 @@
 package com.example.recipebook;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,10 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,15 +19,60 @@ import java.util.List;
 
 import static com.example.recipebook.Constants.RECIPE_DETAILS;
 
-public class RecipesAdapter extends FirebaseRecyclerAdapter<Recipe, RecipesAdapter.RecipeViewHolder> {
+public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> {
 
     private final Context context;
-    List<Recipe> recipes = new ArrayList<>();
+    private final MyViewModel viewModel;
+    List<Recipe> presentedRecipes;
 
-    public RecipesAdapter(Context context, @NonNull FirebaseRecyclerOptions<Recipe> options) {
-        super(options);
+    public RecipesAdapter(Context context, MyViewModel viewModel) {
+
         this.context = context;
+        this.viewModel = viewModel;
 
+        presentedRecipes = new ArrayList<>();
+
+        /*----------------------------------------------------------------*/
+
+        //Observer for favoritesOnlyFlag-
+        //If true we want only favorites recipes in recycler view
+        //Else, we want to show all recipes
+        viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
+
+            if (favoritesOnlyFlag) {
+                //Stop observing for changes on all recipes
+                // Else it make a duplicates, so we want one active observer
+                viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
+
+                //Get updated list of favorites recipes - for recyclerview updates
+                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
+
+                //Observer for changes only on favorites recipes  - for recyclerview updates
+                viewModel.getFavoritesRecipes().observe((LifecycleOwner) context, favoritesRecipes ->
+                        updatePresentedRecipes(favoritesRecipes));
+
+            } else {
+                //Stop observing for changes on favorites recipes -
+                // Else it make a duplicates, so we want one active observer
+                viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
+
+                //Get updated list of all recipes - for recyclerview updates
+                updatePresentedRecipes(viewModel.getRecipes().getValue());
+
+                //Observer for changes on all recipes  - for recyclerview updates
+                viewModel.getRecipes().observe((LifecycleOwner) context, recipes ->
+                        updatePresentedRecipes(recipes));
+            }
+        });
+        /*----------------------------------------------------------------*/
+
+    }
+
+    //Populate list for recycler view with updated list
+    private void updatePresentedRecipes(List<Recipe> recipesList) {
+        presentedRecipes.clear();
+        presentedRecipes.addAll(recipesList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -41,18 +84,24 @@ public class RecipesAdapter extends FirebaseRecyclerAdapter<Recipe, RecipesAdapt
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull RecipeViewHolder holder, int position, @NonNull Recipe model) {
-        holder.setDetails(model);
+    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
+        holder.setDetails(presentedRecipes.get(position));
+
+        //Handling with click on recipe in rv
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, RecipeDetailsActivity.class);
-                intent.putExtra(RECIPE_DETAILS,recipes.get(position));
+                intent.putExtra(RECIPE_DETAILS, presentedRecipes.get(position));
                 context.startActivity(intent);
             }
         });
     }
 
+    @Override
+    public int getItemCount() {
+        return presentedRecipes.size();
+    }
 
     public class RecipeViewHolder extends RecyclerView.ViewHolder {
         TextView nameTv;

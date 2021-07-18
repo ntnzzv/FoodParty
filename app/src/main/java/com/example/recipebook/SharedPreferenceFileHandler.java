@@ -9,28 +9,48 @@ import java.util.Set;
 
 public class SharedPreferenceFileHandler {
     private final Context context;
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor editor;
-    private final String fileName,key;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+    private final String fileName, key;
 
-    public SharedPreferenceFileHandler(Context context, String fileName, String key ){
-        this.context=context;
+    public SharedPreferenceFileHandler(Context context, String fileName, String key) {
+        this.context = context;
         this.fileName = fileName;
-        this.key=key;
+        this.key = key;
+        sharedPref = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
     }
+
+    /*---------------------PUBLIC METHODS-----------------------------*/
+
     public void remove(String id) {
         Set<String> favoritesSet = readFromSpFile();
         favoritesSet.remove(id);
         writeToSpFile(favoritesSet);
     }
+
     public void add(String id) {
         Set<String> favoritesSet = readFromSpFile();
         favoritesSet.add(id);
         writeToSpFile(favoritesSet);
     }
 
+    public SharedPreferences getShredPref() {
+        return sharedPref;
+    }
+
+    public boolean contains(String id) {
+        Set<String> s = (Set<String>) sharedPref.getStringSet(key, Collections.singleton(""));
+        return s.contains(id);
+    }
+
+    public Set<String> read() {
+        return (Set<String>) sharedPref.getStringSet(key, Collections.singleton(""));
+    }
+
+    /*---------------------PRIVATE METHODS----------------------------*/
+
     private Set<String> readFromSpFile() {
-        sharedPref = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        //sharedPref =getShredPref();
         editor = sharedPref.edit();
         Set<String> favoritesSet = (HashSet<String>) sharedPref.getStringSet(key, new HashSet<String>());
         return (Set<String>) new HashSet(favoritesSet);
@@ -41,10 +61,4 @@ public class SharedPreferenceFileHandler {
         editor.apply();
     }
 
-
-    public boolean contains(String id) {
-        SharedPreferences sharedPref = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        Set<String> s = (Set<String>) sharedPref.getStringSet(key, Collections.singleton(""));
-        return s.contains(id);
-    }
 }
