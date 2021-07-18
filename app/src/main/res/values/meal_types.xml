@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="meal_types">
+        <item>Breakfast</item>
+        <item>Brunch</item>
+        <item>Dinner</item>
+        <item>Dessert</item>
+    </string-array>
+</resources>

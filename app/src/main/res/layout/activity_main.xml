@@ -18,5 +18,22 @@
             android:clipToPadding="false"
             />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="30dp"
+            android:backgroundTint="#FFFFFF"
+            android:clickable="true"
+            android:onClick="AddRecipe"
+            app:backgroundTint="#000000"
+            app:maxImageSize="36dp"
+            app:srcCompat="@drawable/outline_add_24" />
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
