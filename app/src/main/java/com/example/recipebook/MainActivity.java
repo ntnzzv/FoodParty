@@ -3,7 +3,6 @@ package com.example.recipebook;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,20 +66,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        Log.i(Constants.TAG, Constants.MAIN + "onCreateOptionsMenu()");
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Log.i(Constants.TAG, Constants.MAIN + "onOptionsItemSelected()");
         switch (item.getItemId()) {
             case R.id.searchItem:
                 //handle search
                 return true;
             case R.id.settingsItem:
                 //handle settings
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return false;
@@ -94,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class RecipeEventListener implements ChildEventListener {
-
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             Recipe recipe = dataSnapshot.getValue(Recipe.class);
@@ -119,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
-
         }
     }
 }

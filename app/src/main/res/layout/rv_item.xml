@@ -36,7 +36,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="Recipe name"
+            android:text="@string/recipe_name"
             app:layout_constraintEnd_toStartOf="@+id/iv_image_item"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,7 +54,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_image_item"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_name_item"
-            tools:text="description description description description description description description description"
+            tools:text="@string/description"
             style="@style/DetailsContentStyleLessSignificant"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
