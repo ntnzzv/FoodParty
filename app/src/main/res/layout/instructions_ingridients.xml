@@ -37,9 +37,10 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="match_parent"
+                    android:layout_width="15dp"
                     android:layout_height="match_parent"
-                    app:srcCompat="@android:drawable/ic_delete" />
+                    android:backgroundTint="#733636"
+                    app:srcCompat="@drawable/collapse" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
