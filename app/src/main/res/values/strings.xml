@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Recipe Book</string>
     <string name="recipe_name">Recipe Name</string>
+    <string name="preference_favorites_file">FavoritesList"</string>
+    <string name="preference_favorites_key">favorite</string>
+    <string name="description">description</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="instructions">Instructions</string>
+    <string name="favorites_msg">Show only favorites recipes</string>
+    <string name="added_msg">Show only my recipes</string>
+    <string name="settings">settings</string>
+    <string name="search">Search</string>
 </resources>

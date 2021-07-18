@@ -12,12 +12,15 @@
         android:roundIcon="@drawable/app_icon2"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeBook">
-        <activity android:name=".RecipeDetailsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".SettingsActivity"></activity>
+        <activity
+            android:name=".RecipeDetailsActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

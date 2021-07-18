@@ -10,13 +10,13 @@
     android:fitsSystemWindows="true"
     tools:context=".RecipeDetailsActivity">
 
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_details"
         android:layout_width="match_parent"
         android:layout_height="256dp"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_tool_bar_details"
@@ -39,18 +39,16 @@
                 tools:src="@tools:sample/backgrounds/scenic" />
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/tb_details"
+                android:id="@+id/toolbar_details"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-
-
-                />
+                app:layout_collapseMode="pin" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -61,6 +59,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_view_name_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -105,7 +104,7 @@
                         android:drawableStart="@drawable/ic_baseline_info_24"
                         android:drawablePadding="16dp"
                         android:gravity="center"
-                        android:text="description" />
+                        android:text="@string/description" />
 
                     <TextView
                         android:id="@+id/tv_description_content_details"
@@ -138,10 +137,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_marginBottom="16dp"
-                        android:drawableStart="@drawable/ic_baseline_format_list_bulleted_24"
+                        android:drawableStart="@drawable/ic_baseline_shopping_cart_24"
                         android:drawablePadding="16dp"
                         android:gravity="center"
-                        android:text="Ingredients" />
+                        android:text="@string/ingredients" />
 
                     <LinearLayout
                         android:id="@+id/list_view_ingredients_details"
@@ -179,7 +178,7 @@
                         android:drawableStart="@drawable/ic_baseline_format_list_numbered_24"
                         android:drawablePadding="16dp"
                         android:gravity="center"
-                        android:text="Instructions" />
+                        android:text="@string/instructions" />
 
                     <LinearLayout
                         android:id="@+id/list_view_instructions_details"
@@ -204,4 +203,32 @@
         android:tint="@color/cardview_light_background"
         app:layout_anchor="@id/app_bar_details"
         app:layout_anchorGravity="bottom|center" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="30dp"
+        android:orientation="vertical"
+        app:layout_anchor="@id/nested_scroll_view"
+        app:layout_anchorGravity="end|bottom">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/favorite_button_details"
+            style="@style/FloatingActionButtonStyle"
+            app:backgroundTint="@color/black"
+            app:elevation="0dp"
+            app:maxImageSize="40dp"
+            app:srcCompat="@drawable/ic_baseline_favorite_border_24" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/edit_button_details"
+            style="@style/FloatingActionButtonStyle"
+            app:backgroundTint="@color/black"
+            app:elevation="0dp"
+            app:maxImageSize="40dp"
+            app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

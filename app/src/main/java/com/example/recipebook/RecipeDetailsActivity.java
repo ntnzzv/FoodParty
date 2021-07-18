@@ -7,22 +7,23 @@ import androidx.core.widget.TextViewCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-
+import java.util.List;
+import static com.example.recipebook.Constants.DEFAULT_TAG;
+import static com.example.recipebook.Constants.FAVORITE_TAG;
 import static com.example.recipebook.Constants.INGREDIENTS_FIELD_NAME;
 import static com.example.recipebook.Constants.INSTRUCTIONS_FIELD_NAME;
 import static com.example.recipebook.Constants.RECIPES_DB_NAME;
 import static com.example.recipebook.Constants.RECIPE_DETAILS;
 
-public class RecipeDetailsActivity extends AppCompatActivity {
+public class RecipeDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Recipe recipe;
     private TextView nameTv, descriptionTv;
@@ -30,6 +31,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private LinearLayout instructionsLl;
     private ImageView imageView;
     private Toolbar toolbar;
+    private FloatingActionButton iconView;
+    private FloatingActionButton favoriteBtn;
+    private FloatingActionButton editBtn;
 
     private ArrayList<String> ingredientsList = new ArrayList<>();
     private ArrayList<String> instructionsList = new ArrayList<>();
@@ -37,21 +41,34 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     FirebaseService fbs;
     private DatabaseReference ingredientsFieldReference;
     private DatabaseReference instructionsFieldReference;
-    private FloatingActionButton iconView;
+
+    SharedPreferenceFileHandler favorites;
+    private String recipeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
 
-        findViewsById();
-
+        //From Intent
         recipe = getRecipeObject();
+        recipeId = recipe.getId();
 
+        //Views initialization
+        findViewsById();
+        setListeners();
+
+        //Create favorite sp handler
+        favorites = new SharedPreferenceFileHandler(this,
+                getString(R.string.preference_favorites_file),
+                getString(R.string.preference_favorites_key));
+
+        //Firebase configurations...
         fbs = FirebaseService.getInstance();
         ingredientsFieldReference = getReference(INGREDIENTS_FIELD_NAME);
         instructionsFieldReference = getReference(INSTRUCTIONS_FIELD_NAME);
 
+        //UI updating
         setUI();
     }
 
@@ -62,10 +79,15 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         ingredientsLl = findViewById(R.id.list_view_ingredients_details);
         instructionsLl = findViewById(R.id.list_view_instructions_details);
         imageView = findViewById(R.id.iv_image_details);
-        toolbar = findViewById(R.id.tb_details);
-        iconView=findViewById(R.id.typeIcon);
+        toolbar = findViewById(R.id.toolbar_details);
+        iconView = findViewById(R.id.typeIcon);
+        favoriteBtn = findViewById(R.id.favorite_button_details);
+        editBtn = findViewById(R.id.edit_button_details);
+    }
 
-
+    private void setListeners() {
+        favoriteBtn.setOnClickListener(this);
+        editBtn.setOnClickListener(this);
     }
 
     /*  ------------------------------------------------    */
@@ -89,35 +111,29 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         nameTv.setText(recipe.getRecipeName());
         descriptionTv.setText(recipe.getDescription());
 
-//        initializeList(this, ingredientsFieldReference, ingredientsList, ingredientsLl);
-//        initializeList(this, instructionsFieldReference, instructionsList, instructionsLl);
-
         //ingredients and instruction setting
-        setList(recipe.getIngredients(),ingredientsLl);
-        setList(recipe.getInstructions(),instructionsLl);
+        setList(recipe.getIngredients(), ingredientsLl);
+        setList(recipe.getInstructions(), instructionsLl);
 
         //image setting
         Picasso.get().load(recipe.getImageUrl()).into(imageView);
 
         setToolbar();
 
-        String type=recipe.getType();
-        int iconId=R.drawable.undefined_icon;
-        if(type.equals("Breakfast"))
-            iconId=R.drawable.breakfast_icon;
-        else if (type.equals("Lunch"))
-            iconId=R.drawable.lunch_icon;
-        else if (type.equals("Dinner"))
-            iconId=R.drawable.dinner_icon;
-        else if (type.equals("Dessert"))
-            iconId=R.drawable.sweet_icon;
+        //set type icon
+        int iconId = getIconId(recipe.getType());
         iconView.setImageResource(iconId);
+
+        //favorite button on/off
+        if (favorites.contains(recipeId))
+            setFavoriteButtonON();
     }
+
 
     private void setList(ArrayList<String> items, LinearLayout itemsLl) {
         TextView textView;
-        for(String item :items){
-            textView= getTextView(item);
+        for (String item : items) {
+            textView = getTextView(item);
             itemsLl.addView(textView);
         }
     }
@@ -128,58 +144,58 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         TextViewCompat.setTextAppearance(textView, R.style.DetailsContentStyle);
         textView.setPadding(0, 16, 0, 16);
         textView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable
-                        (this, R.drawable.ic_baseline_keyboard_arrow_right_24),
+                        (this, R.drawable.ic_round_brightness_1_24),
                 null, null, null);
         textView.setCompoundDrawablePadding(32);
         return textView;
     }
+
     private void setToolbar() {
         toolbar.setTitle(recipe.getRecipeName());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-   /* private void initializeList(Context context, DatabaseReference reference, ArrayList<String> list, LinearLayout linearLayout) {
+    private int getIconId(String type) {
+        if (type.equals("Breakfast"))
+            return R.drawable.breakfast_icon;
+        else if (type.equals("Lunch"))
+            return R.drawable.lunch_icon;
+        else if (type.equals("Dinner"))
+            return R.drawable.dinner_icon;
+        else if (type.equals("Dessert"))
+            return R.drawable.sweet_icon;
+        return R.drawable.undefined_icon;
 
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String item = snapshot.getValue(String.class);
-                list.add(item);
-                TextView textView = getIngredientTv(item);
-                linearLayout.addView(textView);
-            }
+    }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
+    private void setFavoriteButtonOFF() {
+        favoriteBtn.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+        favoriteBtn.setTag(DEFAULT_TAG);
+    }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                //handle
-            }
+    private void setFavoriteButtonON() {
+        favoriteBtn.setImageResource(R.drawable.ic_baseline_favorite_24);
+        favoriteBtn.setTag(FAVORITE_TAG);
+    }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-            private TextView getIngredientTv(String item) {
-                TextView textView = new TextView(context);
-                textView.setText(item);
-                TextViewCompat.setTextAppearance(textView, R.style.DetailsContentStyle);
-                textView.setPadding(0, 16, 0, 16);
-                textView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable
-                                (context, R.drawable.ic_baseline_keyboard_arrow_right_24),
-                        null, null, null);
-                textView.setCompoundDrawablePadding(32);
-                return textView;
-            }
-        });
-
-    }*/
     /*  ------------------------------------------------    */
-
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.favorite_button_details:
+                if (favoriteBtn.getTag() != null && favoriteBtn.getTag().toString().equals(FAVORITE_TAG)) {
+                    setFavoriteButtonOFF();
+                    favorites.remove(recipe.getId());
+                } else {
+                    setFavoriteButtonON();
+                    favorites.add(recipe.getId());
+                }
+                break;
+            case R.id.edit_button_details:
+                break;
+            default:
+                return;
+        }
+    }
 }
