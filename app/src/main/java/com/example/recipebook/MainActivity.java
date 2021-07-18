@@ -1,10 +1,12 @@
 package com.example.recipebook;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.recipebook.AddRecipe.AddRecipeActivity;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -49,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.stopListening();
     }
 
+
     private void setRecyclerViewAdapter() {
+
         RecyclerView rv = findViewById(R.id.rv_recipes_list);
         rv.setLayoutManager(new LinearLayoutManager(this));
         FirebaseRecyclerOptions<Recipe> options = new FirebaseRecyclerOptions.Builder<Recipe>()
@@ -57,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         adapter = new RecipesAdapter(this, options);
         rv.setAdapter(adapter);
+
     }
 
     @Override
@@ -79,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return false;
         }
+    }
+
+    public void AddRecipe(View view) {
+        Intent intent = new Intent(this, AddRecipeActivity.class);
+        startActivity(intent);
+
     }
 
     private class RecipeEventListener implements ChildEventListener {
