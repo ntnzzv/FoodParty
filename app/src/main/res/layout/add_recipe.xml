@@ -1,140 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:orientation="vertical"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <EditText
-            android:id="@+id/et_recipe_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Enter Recipe Name"
-            android:inputType="textPersonName" />
-
-      <!--  <Spinner
-            android:id="@+id/spinner_mealType"
-            style="@android:style/Widget.Spinner"
-            android:layout_width="142dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="125dp"
-            android:layout_marginTop="20dp"
-            android:drawSelectorOnTop="true"
-
-            android:entries="@array/meal_types" />-->
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/spinner_mealType"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            android:padding="10dp">
-
-            <AutoCompleteTextView
-                android:id="@+id/dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Choose recipe type"
-                android:inputType="none"
-
-
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <LinearLayout
-            android:layout_width="350dp"
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+
             android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_instruction"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/outline_add_24"
-                app:endIconContentDescription="Add Instruction"
-                app:helperTextEnabled="true"
-                app:helperText="Add using the '+' button">
+                android:maxHeight="110dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:id="@+id/UploadedImage"
+                android:contentDescription="@string/uploadedimage" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_instruction"
+            <EditText
+                android:id="@+id/et_recipe_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/recipe_name"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:inputType="textPersonName"/>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/spinner_mealType"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:padding="10dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/dropdown"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/enter_instruction" />
+                    android:layout_height="wrap_content"
+                    android:hint="Choose recipe type"
+                    android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInput_instruction"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconContentDescription="Add Instruction"
+                    app:endIconDrawable="@drawable/outline_add_24"
+                    app:endIconMode="custom"
+                    app:helperText="Add using the '+' button"
+                    app:helperTextEnabled="true">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_instruction"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/enter_instruction" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/InstructionsRecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="110dp"
+                    android:layout_marginLeft="20dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInput_ingredient"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endIconContentDescription="Add ingredient"
+                    app:endIconDrawable="@drawable/outline_add_24"
+                    app:endIconMode="custom"
+                    app:helperText="Add using the '+' button"
+                    app:helperTextEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_addIngredient"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:hint="Enter ingredient" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/InstructionsRecyclerView"
+                android:id="@+id/IngredientsRecyclerView"
                 android:layout_width="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_height="110dp" />
+                android:layout_height="110dp"
+                android:layout_marginStart="20dp" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:orientation="vertical">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInput_ingredient"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/outline_add_24"
-                app:endIconContentDescription="Add ingredient"
-                app:helperTextEnabled="true"
-                app:helperText="Add using the '+' button">
+                android:layout_height="123dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_addIngredient"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_action_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:layout_margin="10dp"
+                    android:layout_marginEnd="4dp"
+                    android:contentDescription="@string/add_image"
+                    app:backgroundTint="@color/white"
+                    app:borderWidth="1dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:onClick="SelectImage"
+                    app:maxImageSize="30dp"
+                    app:srcCompat="@drawable/image_placeholder" />
 
-                    android:hint="Enter ingredient" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
+                <Button
+                    android:id="@+id/btn_finish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="55dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/save"
+                    app:layout_constraintBottom_toTopOf="@+id/floating_action_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.513"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/IngredientsRecyclerView"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_height="110dp"/>
-
-
-    </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
