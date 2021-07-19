@@ -1,4 +1,4 @@
-package com.example.recipebook.AddRecipe;
+package com.example.recipebook.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

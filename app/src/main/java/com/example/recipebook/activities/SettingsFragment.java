@@ -1,9 +1,11 @@
-package com.example.recipebook;
+package com.example.recipebook.activities;
 
 import android.os.Bundle;
 
 
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.example.recipebook.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

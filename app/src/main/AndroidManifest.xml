@@ -12,21 +12,21 @@
         android:roundIcon="@drawable/app_icon2"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeBook">
-        <activity android:name=".AddRecipe.AddRecipeActivity" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".activities.AddRecipeActivity" />
+        <activity android:name=".activities.SettingsActivity"></activity>
         <activity
-            android:name=".RecipeDetailsActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".activities.RecipeDetailsActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activities.MainActivity" />
 
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

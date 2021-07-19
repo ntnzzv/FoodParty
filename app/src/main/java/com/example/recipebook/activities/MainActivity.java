@@ -1,4 +1,4 @@
-package com.example.recipebook;
+package com.example.recipebook.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,20 +11,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.firebase.database.DatabaseReference;
+
+import com.example.recipebook.viewmodel.RecipesViewModel;
+import com.example.recipebook.R;
+import com.example.recipebook.adapters.RecipesAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
 
     RecipesAdapter adapter;
-    MyViewModel viewModel;
+    RecipesViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        viewModel = new ViewModelProvider(this).get(MyViewModel.class);
+        viewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
 
         setRecyclerViewAdapter();
     }

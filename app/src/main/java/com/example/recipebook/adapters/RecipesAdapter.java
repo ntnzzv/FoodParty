@@ -1,4 +1,4 @@
-package com.example.recipebook;
+package com.example.recipebook.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,20 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.recipebook.viewmodel.RecipesViewModel;
+import com.example.recipebook.R;
+import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.activities.RecipeDetailsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.recipebook.Constants.RECIPE_DETAILS;
+import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> {
 
     private final Context context;
-    private final MyViewModel viewModel;
+    private final RecipesViewModel viewModel;
     List<Recipe> presentedRecipes;
 
-    public RecipesAdapter(Context context, MyViewModel viewModel) {
+    public RecipesAdapter(Context context, RecipesViewModel viewModel) {
 
         this.context = context;
         this.viewModel = viewModel;
