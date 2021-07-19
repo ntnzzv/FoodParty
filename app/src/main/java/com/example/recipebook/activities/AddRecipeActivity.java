@@ -15,26 +15,36 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipebook.adapters.IngredientsAdapter;
 import com.example.recipebook.adapters.InstructionsAdapter;
 import com.example.recipebook.R;
+import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.utils.FirebaseService;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
+
+import static com.example.recipebook.utils.Constants.RECIPES_DB_NAME;
+
 public class AddRecipeActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 22;
@@ -150,5 +160,40 @@ public class AddRecipeActivity extends AppCompatActivity {
         ingredientsAdapter = new IngredientsAdapter(this,ingredients,ingredientsRecycler);
         ingredientsRecycler.setAdapter(ingredientsAdapter);
 
+    }
+
+    public void Save(View view) {
+        new FancyGifDialog.Builder(this)
+                .setTitle("Almost done!") // You can also send title like R.string.from_resources
+                .setMessage("Have your forgot to add something? press Cancel Otherwise press Submit") // or pass like R.string.description_from_resources
+                .setTitleTextColor(R.color.browser_actions_title_color)
+                .setDescriptionTextColor(R.color.browser_actions_text_color)
+                .setNegativeBtnText("Cancel") // or pass it like android.R.string.cancel
+                .setPositiveBtnBackground(R.color.common_google_signin_btn_text_dark)
+                .setPositiveBtnText("Submit") // or pass it like android.R.string.ok
+                .setNegativeBtnBackground(R.color.purple_200)
+                .setGifResource(R.drawable.gif1)   //Pass your Gif here
+                .isCancellable(true)
+                .OnPositiveClicked(() ->{
+                    Toast.makeText(AddRecipeActivity.this,"Recipe submitted!",Toast.LENGTH_SHORT).show();
+                    Recipe recipe = new Recipe();
+                    String description = ((TextInputEditText)findViewById(R.id.description)).getEditableText().toString();
+                    String type = ((AutoCompleteTextView)findViewById(R.id.dropdown)).getText().toString();
+                    String recipeNAme = ((EditText)findViewById(R.id.et_recipe_name)).getText().toString();
+
+                    recipe.setIngredients(ingredients);
+                    recipe.setInstructions(instructions);
+                    recipe.setDescription(description);
+                    recipe.setRecipeName(recipeNAme);
+                    recipe.setType(type);
+                    //recipe.setImageUrl();
+                    DatabaseReference ingredientsFieldReference;
+                    ingredientsFieldReference = FirebaseService.getInstance().getDBReference("Recipes");
+                    ingredientsFieldReference.child("random").setValue(recipe);
+
+
+                })
+                .OnNegativeClicked(() -> Toast.makeText(AddRecipeActivity.this,"Submission canceled",Toast.LENGTH_SHORT).show())
+                .build();
     }
 }
