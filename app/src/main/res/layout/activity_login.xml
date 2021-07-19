@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingTop="100dp"
+        android:paddingRight="20dp">
+
+        <ImageView
+            android:layout_width="391dp"
+            android:layout_height="262dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/logo1" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/DetailsTitleStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:paddingTop="20sp"
+            android:shadowColor="#0E0E0E"
+            android:text="@string/sign_in"
+            android:textAlignment="center"
+            android:textSize="45sp" />
+
+        <TextView
+            style=""
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:shadowColor="#0E0E0E"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="28dp" />
+
+        <Button
+            android:id="@+id/google_signIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
+            android:drawableLeft="@drawable/google_icon"
+            android:elevation="8dp"
+            android:text="@string/sign_in_with_google" />
+<!--        <Button-->
+<!--            android:id="@+id/facebook_signIn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="30dp"-->
+<!--            android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"-->
+<!--            android:drawableLeft="@drawable/facebook_icon"-->
+<!--            android:elevation="8dp"-->
+<!--            android:text="@string/sign_in_with_facebook" />-->
+    </LinearLayout>
+</ScrollView>

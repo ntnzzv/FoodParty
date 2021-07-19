@@ -8,4 +8,6 @@ public class Constants {
     public static final String INSTRUCTIONS_FIELD_NAME = "instructions";
     public static final String FAVORITE_TAG = "in_favorites";
     public static final String DEFAULT_TAG = "not_in_favorites";
+    public static final String USER_SIGNED = "userSigned";
+    public static final int SIGN_IN_CODE_ID = 222;
 }
