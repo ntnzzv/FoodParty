@@ -1,4 +1,4 @@
-package com.example.recipebook;
+package com.example.recipebook.viewmodel;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -10,6 +10,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
 
+import com.example.recipebook.R;
+import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.utils.FirebaseService;
+import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.example.recipebook.Constants.RECIPES_DB_NAME;
+import static com.example.recipebook.utils.Constants.RECIPES_DB_NAME;
 
-public class MyViewModel extends AndroidViewModel {
+public class RecipesViewModel extends AndroidViewModel {
     private MutableLiveData<List<Recipe>> recipesLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
     private MutableLiveData<Boolean> favoritesOnlyLiveData = new MutableLiveData<>();
@@ -38,7 +42,7 @@ public class MyViewModel extends AndroidViewModel {
     SharedPreferenceFileHandler favorites;
     private final SharedPreferences.OnSharedPreferenceChangeListener spListener;
 
-    public MyViewModel(@NonNull Application application) {
+    public RecipesViewModel(@NonNull Application application) {
         super(application);
 
         initializeVariables();

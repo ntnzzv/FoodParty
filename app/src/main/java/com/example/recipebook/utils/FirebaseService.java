@@ -1,4 +1,4 @@
-package com.example.recipebook;
+package com.example.recipebook.utils;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

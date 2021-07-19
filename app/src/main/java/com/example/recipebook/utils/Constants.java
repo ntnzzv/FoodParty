@@ -1,4 +1,4 @@
-package com.example.recipebook;
+package com.example.recipebook.utils;
 
 public class Constants {
     public static final String TAG="RecipesBook";

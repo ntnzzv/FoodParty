@@ -1,4 +1,4 @@
-package com.example.recipebook;
+package com.example.recipebook.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,17 +11,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.recipebook.utils.FirebaseService;
+import com.example.recipebook.R;
+import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
-import java.util.List;
-import static com.example.recipebook.Constants.DEFAULT_TAG;
-import static com.example.recipebook.Constants.FAVORITE_TAG;
-import static com.example.recipebook.Constants.INGREDIENTS_FIELD_NAME;
-import static com.example.recipebook.Constants.INSTRUCTIONS_FIELD_NAME;
-import static com.example.recipebook.Constants.RECIPES_DB_NAME;
-import static com.example.recipebook.Constants.RECIPE_DETAILS;
+
+import static com.example.recipebook.utils.Constants.DEFAULT_TAG;
+import static com.example.recipebook.utils.Constants.FAVORITE_TAG;
+import static com.example.recipebook.utils.Constants.INGREDIENTS_FIELD_NAME;
+import static com.example.recipebook.utils.Constants.INSTRUCTIONS_FIELD_NAME;
+import static com.example.recipebook.utils.Constants.RECIPES_DB_NAME;
+import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 
 public class RecipeDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
