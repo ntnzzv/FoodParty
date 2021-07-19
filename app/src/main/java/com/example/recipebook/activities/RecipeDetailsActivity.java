@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.recipebook.utils.FirebaseService;
 import com.example.recipebook.R;
@@ -192,13 +193,18 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
                 if (favoriteBtn.getTag() != null && favoriteBtn.getTag().toString().equals(FAVORITE_TAG)) {
                     setFavoriteButtonOFF();
                     favorites.remove(recipe.getId());
+                    Toast.makeText(this, getString(R.string.removed_from_favorites), Toast.LENGTH_SHORT).show();
                 } else {
                     setFavoriteButtonON();
                     favorites.add(recipe.getId());
+                    Toast.makeText(this, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.edit_button_details:
+                //...handle...
                 break;
+            case R.id.delete_button_details:
+
             default:
                 return;
         }

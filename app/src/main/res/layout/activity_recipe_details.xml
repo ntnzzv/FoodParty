@@ -228,6 +228,13 @@
             app:elevation="0dp"
             app:maxImageSize="40dp"
             app:srcCompat="@drawable/ic_baseline_edit_24" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/delete_button_details"
+            style="@style/FloatingActionButtonStyle"
+            app:backgroundTint="@color/black"
+            app:elevation="0dp"
+            app:maxImageSize="40dp"
+            app:srcCompat="@drawable/ic_baseline_delete_24" />
 
 
     </LinearLayout>
