@@ -12,8 +12,9 @@
         android:roundIcon="@drawable/app_icon2"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeBook">
+        <activity android:name=".activities.LoginActivity"></activity>
         <activity android:name=".activities.AddRecipeActivity" />
-        <activity android:name=".activities.SettingsActivity"></activity>
+        <activity android:name=".activities.SettingsActivity" />
         <activity
             android:name=".activities.RecipeDetailsActivity"
             android:parentActivityName=".activities.MainActivity"

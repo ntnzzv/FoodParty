@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <CheckBoxPreference
+    <SwitchPreference
         app:iconSpaceReserved="false"
         app:key="favorites"
         app:title="@string/favorites_msg" />
-    <CheckBoxPreference
+    <SwitchPreference
         app:iconSpaceReserved="false"
         app:key="Added"
         app:title="@string/added_msg" />
