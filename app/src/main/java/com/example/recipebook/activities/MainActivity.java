@@ -12,15 +12,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipebook.utils.Authentication;
 import com.example.recipebook.utils.Constants;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import static com.example.recipebook.utils.Constants.SIGN_IN_CODE_ID;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
@@ -109,12 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             //user already signed
-            userAlreadySignedFlag = true;
 
             //...need to handle...
         } else {
             //user not signed
-            Intent intent = new Intent(this,LoginActivity2.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
     }
@@ -128,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 //    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
