@@ -24,7 +24,7 @@
     <string name="uploadedimage">UploadedImage</string>
     <string name="sign_in">Sign-In</string>
     <string name="sign_in_with_google">Sign In with Google</string>
-    <string name="sign_in_with_facebook">sign in with facebook</string>
+    <string name="Use_without_an_account">Use without an account</string>
     <string name="logout">Log-out</string>
     <string name="removed_from_favorites">Recipe removed from favorites</string>
     <string name="added_to_favorites">Recipe added to favorites</string>

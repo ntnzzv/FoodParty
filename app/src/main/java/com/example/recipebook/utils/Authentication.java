@@ -15,6 +15,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import static android.app.Activity.RESULT_OK;
+import static com.example.recipebook.utils.Constants.USER_SIGNED;
+
 public class Authentication {
 
     public static final int RC_SIGN_IN = 9001;
@@ -49,7 +52,10 @@ public class Authentication {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(context,task ->{
                     if(task.isSuccessful()){
-                        context.startActivity(new Intent(context, MainActivity.class));
+                        Intent intent=new Intent();
+                        intent.putExtra(USER_SIGNED,true);
+                        context.setResult(RESULT_OK, intent);
+                        context.finish();
                     }
                     else{
                         Log.d("Auth",task.getException().toString());

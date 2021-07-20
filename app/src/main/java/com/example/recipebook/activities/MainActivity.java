@@ -105,10 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             //user already signed
-
+            userAlreadySignedFlag=true;
             //...need to handle...
         } else {
             //user not signed
+            userAlreadySignedFlag=false;
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
