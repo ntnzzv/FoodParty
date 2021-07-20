@@ -1,6 +1,7 @@
 package com.example.recipebook.activities;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.recipebook.utils.Authentication;
 import com.example.recipebook.utils.Constants;
 import com.example.recipebook.utils.Instances;
+import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean userAlreadySignedFlag;
 
+    private NetworkStateReceiver netStateReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +47,28 @@ public class MainActivity extends AppCompatActivity {
 
         setRecyclerViewAdapter();
 
+        //Broadcast receiver for network state
+        netStateReceiver = new NetworkStateReceiver();
+
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //create intent filter and register our receiver to get network state changes
+        registerReceiver(netStateReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //unregister receiver
+        unregisterReceiver(netStateReceiver);
+
+    }
+    /*----------------------------------------------------------------*/
     private void setRecyclerViewAdapter() {
         RecyclerView rv = findViewById(R.id.rv_recipes_list);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -75,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, Constants.SIGN_IN_CODE_ID);
             case R.id.logout_item:
                 //...need to handle...
+
             default:
                 return false;
         }
@@ -109,12 +134,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (Instances.currentUser != null) {
             //user already signed
-
+            userAlreadySignedFlag=true;
             //...need to handle...
         } else {
             //user not signed
+            userAlreadySignedFlag=false;
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent,SIGN_IN_CODE_ID);
         }
     }
 //    private FirebaseAuth mAuth;
@@ -134,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK)
             if (requestCode == SIGN_IN_CODE_ID) {
                 userAlreadySignedFlag = data.getExtras().getBoolean(USER_SIGNED);
-
                 //...need to handle...
             }
     }

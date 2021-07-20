@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.recipebook.adapters.IngredientsAdapter;
 import com.example.recipebook.adapters.InstructionsAdapter;
 import com.example.recipebook.R;
+import com.example.recipebook.broadcastreceivers.BatteryInfoReceiver;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.utils.Authentication;
 import com.example.recipebook.utils.FirebaseService;
@@ -43,8 +45,9 @@ public class AddRecipeActivity extends AppCompatActivity {
     ArrayList<String> ingredients = new ArrayList<>();
     TextInputEditText instructionTextInput,ingredientTextInput;
 
-
     private Uri filePath;
+
+    private BatteryInfoReceiver batteryInfoReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,24 @@ public class AddRecipeActivity extends AppCompatActivity {
         setContentView(R.layout.add_recipe);
         InitializeActivity();
         populateDropdown();
+
+        batteryInfoReceiver =new BatteryInfoReceiver();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //create intent filter and register receiver to get battery info changes
+        registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //unregister receivers
+        unregisterReceiver(batteryInfoReceiver);
     }
 
     public void addInstruction() {
@@ -179,7 +200,6 @@ public class AddRecipeActivity extends AppCompatActivity {
                     FirebaseService.getInstance().getDBReference("Recipes/").child(userUid).child(recipeNAme).setValue(recipe);
 
                     ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
-
 
 
 

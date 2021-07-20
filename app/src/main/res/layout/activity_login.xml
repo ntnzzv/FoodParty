@@ -57,14 +57,12 @@
             android:drawableLeft="@drawable/google_icon"
             android:elevation="8dp"
             android:text="@string/sign_in_with_google" />
-<!--        <Button-->
-<!--            android:id="@+id/facebook_signIn"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="30dp"-->
-<!--            android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"-->
-<!--            android:drawableLeft="@drawable/facebook_icon"-->
-<!--            android:elevation="8dp"-->
-<!--            android:text="@string/sign_in_with_facebook" />-->
+        <Button
+            android:id="@+id/without_signIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:elevation="8dp"
+            android:text="@string/Use_without_an_account" />
     </LinearLayout>
 </ScrollView>

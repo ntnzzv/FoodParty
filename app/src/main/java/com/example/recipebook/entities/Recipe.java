@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Recipe implements Serializable {
-    private String id;
-    private String recipeName;
-    private String description;
-    private String imageUrl;
+    private String id="";
+    private String recipeName="";
+    private String description="";
+    private String imageUrl="";
     private ArrayList<String> ingredients = new ArrayList<>();
     private ArrayList<String> instructions = new ArrayList<>();
-    private String type;
+    private String type="";
 
     public Recipe() {
     }

@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
@@ -61,6 +62,7 @@ dependencies {
 
     // Also declare the dependency for the Google Play services library and specify its version
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
 
 
 

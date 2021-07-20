@@ -122,7 +122,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         public void setDetails(Recipe recipe) {
             nameTv.setText(recipe.getRecipeName());
             shortDescriptionTv.setText(recipe.getDescription());
-            Picasso.get().load(recipe.getImageUrl()).into(imageView);
+
+            String imgUrl=recipe.getImageUrl();
+            if(imgUrl.equals(""))
+                imageView.setBackgroundResource(R.drawable.no_image);
+            else
+                Picasso.get().load(recipe.getImageUrl()).into(imageView);
+
         }
     }
 
