@@ -1,25 +1,29 @@
 package com.example.recipebook.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.TextViewCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.recipebook.utils.FirebaseService;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
-import com.example.recipebook.utils.FirebaseService;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import static com.example.recipebook.utils.Constants.DEFAULT_TAG;
@@ -40,6 +44,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     private FloatingActionButton iconView;
     private FloatingActionButton favoriteBtn;
     private FloatingActionButton editBtn;
+    private FloatingActionButton deleteBtn;
 
     private ArrayList<String> ingredientsList = new ArrayList<>();
     private ArrayList<String> instructionsList = new ArrayList<>();
@@ -47,9 +52,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     FirebaseService fbs;
     private DatabaseReference ingredientsFieldReference;
     private DatabaseReference instructionsFieldReference;
+    private DatabaseReference recipesDBReference;
 
     SharedPreferenceFileHandler favorites;
     private String recipeId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +78,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
 
         //Firebase configurations...
         fbs = FirebaseService.getInstance();
-        ingredientsFieldReference = getReference(INGREDIENTS_FIELD_NAME);
-        instructionsFieldReference = getReference(INSTRUCTIONS_FIELD_NAME);
+        ingredientsFieldReference = getReferenceToRecipeField(INGREDIENTS_FIELD_NAME);
+        instructionsFieldReference = getReferenceToRecipeField(INSTRUCTIONS_FIELD_NAME);
 
         //UI updating
         setUI();
@@ -89,11 +96,13 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         iconView = findViewById(R.id.typeIcon);
         favoriteBtn = findViewById(R.id.favorite_button_details);
         editBtn = findViewById(R.id.edit_button_details);
+        deleteBtn = findViewById(R.id.delete_button_details);
     }
 
     private void setListeners() {
         favoriteBtn.setOnClickListener(this);
         editBtn.setOnClickListener(this);
+        deleteBtn.setOnClickListener(this);
     }
 
     /*  ------------------------------------------------    */
@@ -103,13 +112,16 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     }
 
     /*  ------------------------------------------------    */
-    private DatabaseReference getReference(String fieldName) {
-        String path = getPath(fieldName);
-        return fbs.getReferenceByPath(path);
+    private DatabaseReference getReferenceToRecipeField(String fieldName) {
+        return fbs.getReferenceByPath(getRecipePath() + "/" + fieldName);
     }
 
-    private String getPath(String name) {
-        return RECIPES_DB_NAME + "/" + recipe.getId() + "/" + name;
+    private DatabaseReference getReferenceToRecipe() {
+        return fbs.getReferenceByPath(getRecipePath());
+    }
+
+    private String getRecipePath() {
+        return RECIPES_DB_NAME + "/" + recipe.getId();
     }
 
     /*  ------------------------------------------------    */
@@ -121,8 +133,12 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         setList(recipe.getIngredients(), ingredientsLl);
         setList(recipe.getInstructions(), instructionsLl);
 
-        //image setting
-        Picasso.get().load(recipe.getImageUrl()).into(imageView);
+
+        String imgUrl=recipe.getImageUrl();
+        if(imgUrl.equals(""))
+            imageView.setBackgroundResource(R.drawable.no_image);
+        else
+            Picasso.get().load(recipe.getImageUrl()).into(imageView);
 
         setToolbar();
 
@@ -157,12 +173,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setToolbar() {
+
         toolbar.setTitle(recipe.getRecipeName());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private int getIconId(String type) {
+
         if (type.equals("Breakfast"))
             return R.drawable.breakfast_icon;
         else if (type.equals("Lunch"))
@@ -171,6 +189,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
             return R.drawable.dinner_icon;
         else if (type.equals("Dessert"))
             return R.drawable.sweet_icon;
+
         return R.drawable.undefined_icon;
 
     }
@@ -190,23 +209,62 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.favorite_button_details:
-                if (favoriteBtn.getTag() != null && favoriteBtn.getTag().toString().equals(FAVORITE_TAG)) {
-                    setFavoriteButtonOFF();
-                    favorites.remove(recipe.getId());
-                    Toast.makeText(this, getString(R.string.removed_from_favorites), Toast.LENGTH_SHORT).show();
-                } else {
-                    setFavoriteButtonON();
-                    favorites.add(recipe.getId());
-                    Toast.makeText(this, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
-                }
+                handleFavoritesButton();
                 break;
             case R.id.edit_button_details:
                 //...handle...
                 break;
             case R.id.delete_button_details:
-
+                handleDeleteButton();
+                break;
             default:
                 return;
         }
     }
+
+    private void handleDeleteButton() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.delete_dialog_title);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete_dialog_btn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Delete from firebase, listener in view model will updated
+                getReferenceToRecipe().removeValue();
+                finish();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setIcon(android.R.drawable.ic_menu_delete);
+
+        // Create the alert dialog
+        AlertDialog dialog = builder.create();
+
+
+
+        // Finally, display the alert dialog
+        dialog.show();
+        designDeleteButton(dialog);
+    }
+
+    private void designDeleteButton(AlertDialog dialog) {
+        // Get the alert dialog buttons reference
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        // Change the alert dialog buttons text and background color
+        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.white));
+        positiveButton.setBackgroundResource(R.color.red);
+    }
+
+    private void handleFavoritesButton() {
+        if (favoriteBtn.getTag() != null && favoriteBtn.getTag().toString().equals(FAVORITE_TAG)) {
+            setFavoriteButtonOFF();
+            favorites.remove(recipe.getId());
+            Toast.makeText(this, getString(R.string.removed_from_favorites), Toast.LENGTH_SHORT).show();
+        } else {
+            setFavoriteButtonON();
+            favorites.add(recipe.getId());
+            Toast.makeText(this, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
