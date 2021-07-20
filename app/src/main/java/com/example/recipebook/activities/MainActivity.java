@@ -12,11 +12,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.recipebook.utils.Authentication;
 import com.example.recipebook.utils.Constants;
+import com.example.recipebook.utils.Instances;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import static com.example.recipebook.utils.Constants.SIGN_IN_CODE_ID;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
@@ -102,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void checkIfUserSigned() {
+        Instances.currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (Instances.currentUser != null) {
             //user already signed
 
             //...need to handle...

@@ -190,11 +190,11 @@
         android:layout_margin="20dp"
         android:contentDescription="@string/add_image"
         android:onClick="SelectImage"
+        android:src="@drawable/image_placeholder"
         app:backgroundTint="@color/white"
         app:borderWidth="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="30dp"
-      />
+        app:maxImageSize="30dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

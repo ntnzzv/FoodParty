@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recipebook.R;
 import com.example.recipebook.utils.Authentication;
+import com.example.recipebook.utils.Instances;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
@@ -23,9 +24,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
 
-        auth = new Authentication(this);
+        Instances.auth = new Authentication(this);
 
-        findViewById(R.id.google_signIn).setOnClickListener(v -> auth.signIn());
+        findViewById(R.id.google_signIn).setOnClickListener(v -> Instances.auth.signIn());
     }
 
     @Override
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try{
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                auth.firebaseAuthWithGoogle(account.getIdToken());
+                Instances.auth.firebaseAuthWithGoogle(account.getIdToken());
             } catch(ApiException e){}
         }
     }

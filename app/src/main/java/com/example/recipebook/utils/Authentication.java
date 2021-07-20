@@ -49,6 +49,7 @@ public class Authentication {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(context,task ->{
                     if(task.isSuccessful()){
+                        Instances.currentUser = Instances.auth.mAuth.getCurrentUser();
                         context.startActivity(new Intent(context, MainActivity.class));
                     }
                     else{
@@ -57,6 +58,4 @@ public class Authentication {
                 });
 
     }
-
-    public FirebaseUser getCurrentUser(){ return mAuth.getCurrentUser();}
 }

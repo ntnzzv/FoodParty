@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import com.example.recipebook.activities.AddRecipeActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -22,11 +23,11 @@ public final class ImageHandler {
 
 
 
-    public static String UploadImage(Context context, Context ToastClassContext, Uri filePath){
+    public static void UploadImage(Context context, Context ToastClassContext, Uri filePath,String userUid, String recipeName){
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
-        String fileLocationInStorage = "images/" + UUID.randomUUID().toString();
+        String recipePath = "Recipe/" + userUid + "/" + recipeName ;
         if (filePath != null) {
             // Code for showing progressDialog while uploading
             ProgressDialog progressDialog = new ProgressDialog(context);
@@ -34,19 +35,30 @@ public final class ImageHandler {
             progressDialog.show();
 
             // Defining the child of storageReference
-            StorageReference ref = storageReference.child(fileLocationInStorage);
+            StorageReference ref = storageReference.child("images/");
 
             // adding listeners on upload
             // or failure of image
             // Progress Listener for loading
 // percentage on the dialog box
             ref.putFile(filePath).addOnSuccessListener(
-                            taskSnapshot -> {
-                                // Image uploaded successfully
-                                // Dismiss dialog
-                                progressDialog.dismiss();
-                                Toast.makeText(ToastClassContext, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
-                            })
+                    taskSnapshot -> {
+                        // Image uploaded successfully
+                        // Dismiss dialog
+                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Uri downloadUrl = uri;
+
+                                FirebaseService.getInstance().getDBReference("Recipes/")
+                                        .child(userUid)
+                                        .child(recipeName)
+                                        .child("imageUrl").setValue(uri.toString());
+                                //Do what you want with the url
+                            }});
+                        progressDialog.dismiss();
+                        Toast.makeText(ToastClassContext, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
+                    })
 
                     .addOnFailureListener(e -> {
                         // Error, Image not uploaded
@@ -59,7 +71,6 @@ public final class ImageHandler {
                                 progressDialog.setMessage("Uploaded " + (int)progress + "%");
                             });
         }
-        return fileLocationInStorage;
 
     }
 }
