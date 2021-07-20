@@ -116,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
             //user not signed
             Intent intent = new Intent(this,LoginActivity2.class);
             startActivity(intent);
-
-
         }
     }
 //    private FirebaseAuth mAuth;

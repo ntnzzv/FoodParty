@@ -22,11 +22,11 @@ public final class ImageHandler {
 
 
 
-    public static void UploadImage(Context context, Context ToastClassContext, Uri filePath){
+    public static String UploadImage(Context context, Context ToastClassContext, Uri filePath){
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
-
+        String fileLocationInStorage = "images/" + UUID.randomUUID().toString();
         if (filePath != null) {
             // Code for showing progressDialog while uploading
             ProgressDialog progressDialog = new ProgressDialog(context);
@@ -34,7 +34,7 @@ public final class ImageHandler {
             progressDialog.show();
 
             // Defining the child of storageReference
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child(fileLocationInStorage);
 
             // adding listeners on upload
             // or failure of image
@@ -59,5 +59,7 @@ public final class ImageHandler {
                                 progressDialog.setMessage("Uploaded " + (int)progress + "%");
                             });
         }
+        return fileLocationInStorage;
+
     }
 }

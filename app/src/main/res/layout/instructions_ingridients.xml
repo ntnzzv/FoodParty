@@ -51,7 +51,7 @@
                     android:layout_width="15dp"
                     android:layout_height="match_parent"
                     android:backgroundTint="#733636"
-                    app:srcCompat="@drawable/collapse" />
+                    app:srcCompat="@android:drawable/ic_notification_clear_all" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

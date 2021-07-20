@@ -195,6 +195,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:maxImageSize="30dp"
-        app:srcCompat="@drawable/image_placeholder" />
+      />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,8 +26,8 @@ public class LoginActivity2 extends AppCompatActivity {
         auth = new Authentication(this);
 
         findViewById(R.id.google_signIn).setOnClickListener(v -> auth.signIn());
-
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

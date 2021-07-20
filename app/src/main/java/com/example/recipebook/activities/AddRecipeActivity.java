@@ -1,23 +1,19 @@
 package com.example.recipebook.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipebook.adapters.IngredientsAdapter;
@@ -25,25 +21,15 @@ import com.example.recipebook.adapters.InstructionsAdapter;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.utils.FirebaseService;
-import com.example.recipebook.viewmodel.RecipesViewModel;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.recipebook.utils.ImageHandler;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
-import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.UUID;
-
-import static com.example.recipebook.utils.Constants.RECIPES_DB_NAME;
 
 public class AddRecipeActivity extends AppCompatActivity {
 
@@ -186,7 +172,8 @@ public class AddRecipeActivity extends AppCompatActivity {
                     recipe.setDescription(description);
                     recipe.setRecipeName(recipeNAme);
                     recipe.setType(type);
-                    //recipe.setImageUrl();
+                    String imageURL = ImageHandler.UploadImage(this,this,filePath);
+                    recipe.setImageUrl(imageURL);
                     DatabaseReference ingredientsFieldReference;
                     ingredientsFieldReference = FirebaseService.getInstance().getDBReference("Recipes");
                     ingredientsFieldReference.child("random").setValue(recipe);

@@ -13,9 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.recipebook.utils.FirebaseService;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.utils.FirebaseService;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;

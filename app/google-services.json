@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "615313844745",
-    "project_id": "recipe-book-3913b",
-    "storage_bucket": "recipe-book-3913b.appspot.com"
+    "project_number": "787702660658",
+    "project_id": "recipe-book-7fa2b",
+    "storage_bucket": "recipe-book-7fa2b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:615313844745:android:830f3f539d70f9a6ffa6d8",
+        "mobilesdk_app_id": "1:787702660658:android:fb48fb62b386a45a16062b",
         "android_client_info": {
           "package_name": "com.example.recipebook"
         }
       },
       "oauth_client": [
         {
-          "client_id": "615313844745-ti410pt8794lke99nbtdg3ov8e2on70k.apps.googleusercontent.com",
+          "client_id": "787702660658-fsdrtqn60e54g5ohtq53mq8ighl45qte.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDdsuLcWQs0KAhq8vIePutP-qagS8sPAWo"
+          "current_key": "AIzaSyAqbev0LCjZzqyRK89rfjyP5agnJ83S9us"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "615313844745-ti410pt8794lke99nbtdg3ov8e2on70k.apps.googleusercontent.com",
+              "client_id": "787702660658-fsdrtqn60e54g5ohtq53mq8ighl45qte.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
