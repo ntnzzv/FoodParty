@@ -33,7 +33,7 @@ public class RecipesViewModel extends AndroidViewModel {
     boolean favoritesOnlyFlag;
 
     RealTimeDBService realTimeDBService;
-    DatabaseReference recipesDBReference;
+    DatabaseReference usersDBReference;
 
 //    private final SharedPreferences defaultSp;
 //    private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListener;
@@ -98,8 +98,8 @@ public class RecipesViewModel extends AndroidViewModel {
 
         //Firebase configurations
         realTimeDBService = RealTimeDBService.getInstance();
-        recipesDBReference = realTimeDBService.getDBReference(USERS_DB_NAME);
-        recipesDBReference.addChildEventListener(new UserEventListener());
+        usersDBReference = realTimeDBService.getDBReference(USERS_DB_NAME);
+        usersDBReference.addChildEventListener(new UserEventListener());
     }
 
     /*----------------------------------------------------------------*/
