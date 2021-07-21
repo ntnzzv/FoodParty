@@ -32,7 +32,7 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
         int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         float batteryPercent = getBatteryPercent(level, scale);
 
-        if (batteryPercent <15 && !isCharging) {
+        if (batteryPercent <30 && !isCharging) {
             Toast.makeText(context, "Low battery", Toast.LENGTH_LONG).show();
             new FancyGifDialog.Builder(context)
                     .setTitle("Low battery")
@@ -48,7 +48,6 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
                     .OnPositiveClicked(() ->{
                     })
                     .OnNegativeClicked(() -> {})
-
                     .build();
 
 

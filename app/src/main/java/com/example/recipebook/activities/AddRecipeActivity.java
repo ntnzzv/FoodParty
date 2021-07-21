@@ -58,6 +58,7 @@ public class AddRecipeActivity extends AppCompatActivity {
         populateDropdown();
 
         batteryInfoReceiver =new BatteryInfoReceiver();
+
     }
 
     @Override
@@ -197,7 +198,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                     recipe.setDescription(description);
                     recipe.setRecipeName(recipeNAme);
                     recipe.setType(type);
-                    FirebaseService.getInstance().getDBReference("Recipes/").child(userUid).child(recipeNAme).setValue(recipe);
+                    FirebaseService.getInstance().getDBReference(userUid).child("Recipes/").child(recipeNAme).setValue(recipe);
 
                     ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
 

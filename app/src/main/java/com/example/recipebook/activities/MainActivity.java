@@ -23,6 +23,8 @@ import com.example.recipebook.adapters.RecipesAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.net.Authenticator;
+
 import static com.example.recipebook.utils.Constants.SIGN_IN_CODE_ID;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
 
@@ -98,7 +100,10 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, Constants.SIGN_IN_CODE_ID);
             case R.id.logout_item:
-                //...need to handle...
+                Instances.auth.signOut();
+                Instances.auth.gsc.signOut();
+                intent = new Intent(this, LoginActivity.class);
+                startActivityForResult(intent, Constants.SIGN_IN_CODE_ID);
 
             default:
                 return false;
@@ -134,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (Instances.currentUser != null) {
             //user already signed
+            Instances.auth = new Authentication(this);
             userAlreadySignedFlag=true;
             //...need to handle...
         } else {

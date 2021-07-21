@@ -16,7 +16,7 @@ import com.google.android.gms.tasks.Task;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Authentication auth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,6 @@ public class LoginActivity extends AppCompatActivity {
         Instances.auth = new Authentication(this);
 
         findViewById(R.id.google_signIn).setOnClickListener(v -> Instances.auth.signIn());
-        findViewById(R.id.google_signIn).setOnClickListener(v -> auth.signIn());
         findViewById(R.id.without_signIn).setOnClickListener(v -> finish());
     }
 
@@ -40,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 try {
                     GoogleSignInAccount account = task.getResult(ApiException.class);
-                    auth.firebaseAuthWithGoogle(account.getIdToken());
+                    Instances.auth.firebaseAuthWithGoogle(account.getIdToken());
                 } catch (ApiException e) {
                 }
             }

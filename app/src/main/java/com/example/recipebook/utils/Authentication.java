@@ -24,14 +24,13 @@ public class Authentication {
 
     AppCompatActivity context;
     GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
+    public GoogleSignInClient gsc;
     FirebaseAuth mAuth;
 
     public Authentication(AppCompatActivity context){
         this.context = context;
 
         mAuth = FirebaseAuth.getInstance();
-
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(context.getResources().getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();

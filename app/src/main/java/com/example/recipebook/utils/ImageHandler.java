@@ -50,8 +50,8 @@ public final class ImageHandler {
                             public void onSuccess(Uri uri) {
                                 Uri downloadUrl = uri;
 
-                                FirebaseService.getInstance().getDBReference("Recipes/")
-                                        .child(userUid)
+                                FirebaseService.getInstance().getDBReference(userUid)
+                                        .child("Recipes/")
                                         .child(recipeName)
                                         .child("imageUrl").setValue(uri.toString());
                                 //Do what you want with the url

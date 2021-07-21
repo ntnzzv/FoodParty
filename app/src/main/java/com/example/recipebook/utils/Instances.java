@@ -8,4 +8,5 @@ public class Instances {
     public static FirebaseUser currentUser;
     public static Authentication auth;
 
+
 }
