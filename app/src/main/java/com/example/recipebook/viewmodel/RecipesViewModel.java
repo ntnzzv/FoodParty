@@ -27,20 +27,22 @@ import java.util.Set;
 import static com.example.recipebook.utils.Constants.USERS_DB_NAME;
 
 public class RecipesViewModel extends AndroidViewModel {
-    private MutableLiveData<List<User>> recipesLiveData;
+    private MutableLiveData<List<User>> usersLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
+  //  private MutableLiveData<List<Recipe>> recipesLiveData;
     private MutableLiveData<Boolean> favoritesOnlyLiveData = new MutableLiveData<>();
 
     List<User> userList;
-
     List<Recipe> favoritesRecipesList;
+    List<Recipe> recipesList;
     boolean favoritesOnlyFlag;
 
     RealTimeDBService realTimeDBService;
     DatabaseReference usersDBReference;
 
     private final SharedPreferences defaultSp;
-private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListener;
+    private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListener;
+
     SharedPreferenceFileHandler favorites;
     private final SharedPreferences.OnSharedPreferenceChangeListener spListener;
 
@@ -53,7 +55,7 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
 
         //Get default SP file, there are a preference settings,
         // includes user's preference- to see all recipes or only his favorites.
-       defaultSp = PreferenceManager.getDefaultSharedPreferences(application);
+        defaultSp = PreferenceManager.getDefaultSharedPreferences(application);
 
         //update flag to current preference value
         favoritesOnlyFlag = defaultSp.getBoolean(application.getString(R.string.favorites), false);
@@ -88,7 +90,7 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
 
                 //Put all recipes in sp file to favorites list
                 favoritesRecipesList.clear();
-                for(User user: userList) {
+                for (User user : userList) {
                     user.getRecipes().forEach(recipe -> {
                         if (spFavorites.contains(recipe.getId()))
                             favoritesRecipesList.add(recipe);
@@ -112,15 +114,17 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
     private void initializeVariables() {
         userList = new ArrayList<>();
         favoritesRecipesList = new ArrayList<>();
-        recipesLiveData = new MutableLiveData<>();
+        recipesList=new ArrayList<>();
+        usersLiveData = new MutableLiveData<>();
         favoritesRecipesLiveData = new MutableLiveData<>();
+   //     recipesLiveData = new MutableLiveData<>();
     }
 
     /*----------------------------------------------------------------*/
     public LiveData<List<User>> getUsers() {
-        if (recipesLiveData.getValue() == null)
-            recipesLiveData.setValue(userList);
-        return recipesLiveData;
+        if (usersLiveData.getValue() == null)
+            usersLiveData.setValue(userList);
+        return usersLiveData;
     }
 
     public LiveData<List<Recipe>> getFavoritesRecipes() {
@@ -129,7 +133,12 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
         }
         return favoritesRecipesLiveData;
     }
-
+//    public LiveData<List<Recipe>> getRecipes() {
+//        if (recipesLiveData.getValue() == null) {
+//            recipesLiveData.setValue(recipesList);
+//        }
+//        return recipesLiveData;
+//    }
     public LiveData<Boolean> getFavoritesOnlyFlag() {
         if (favoritesOnlyLiveData.getValue() == null) {
             favoritesOnlyLiveData.setValue(favoritesOnlyFlag);
@@ -144,7 +153,8 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
             User user = getUserFromSnapshot(userSnapshot);
             updateUserRecipesList(userSnapshot, user);
             userList.add(user);
-            recipesLiveData.setValue(userList);
+            usersLiveData.setValue(userList);
+
 
             for (Recipe recipe : user.getRecipes())
                 if (favorites.contains(recipe.getId()))
@@ -158,7 +168,7 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
             userList.remove(user);
             updateUserRecipesList(userSnapshot, user);
             userList.add(user);
-            recipesLiveData.setValue(userList);
+            usersLiveData.setValue(userList);
 
 
             for (Recipe recipe : user.getRecipes())
@@ -176,7 +186,7 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
             User user = getUserFromSnapshot(dataSnapshot);
             userList.remove(user);
-            recipesLiveData.setValue(userList);
+            usersLiveData.setValue(userList);
 
             for (Recipe recipe : user.getRecipes())
                 if (favorites.contains(recipe.getId()))
@@ -203,7 +213,7 @@ private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListen
         private void updateUserRecipesList(@NonNull DataSnapshot userSnapshot, User user) {
             for (DataSnapshot recipeSnapshot : userSnapshot.getChildren()) {
                 Recipe recipe = recipeSnapshot.getValue(Recipe.class);
-                recipe.setDescription(recipeSnapshot.getKey());
+                recipe.setId(recipeSnapshot.getKey());
                 user.getRecipes().add(recipe);
             }
         }
