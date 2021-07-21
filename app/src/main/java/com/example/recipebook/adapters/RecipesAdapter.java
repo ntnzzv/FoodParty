@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.recipebook.entities.User;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
@@ -41,42 +42,44 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         //Observer for favoritesOnlyFlag-
         //If true we want only favorites recipes in recycler view
         //Else, we want to show all recipes
-   /*     viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
+ //       viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
 
-            if (favoritesOnlyFlag) {
-                //Stop observing for changes on all recipes
-                // Else it make a duplicates, so we want one active observer
-                viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
-
-                //Get updated list of favorites recipes - for recyclerview updates
-                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
-
-                //Observer for changes only on favorites recipes  - for recyclerview updates
-                viewModel.getFavoritesRecipes().observe((LifecycleOwner) context, favoritesRecipes ->
-                        updatePresentedRecipes(favoritesRecipes));
-
-            } else {
+//            if (favoritesOnlyFlag) {
+//                //Stop observing for changes on all recipes
+//                // Else it make a duplicates, so we want one active observer
+//                viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
+//
+//                //Get updated list of favorites recipes - for recyclerview updates
+//                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
+//
+//                //Observer for changes only on favorites recipes  - for recyclerview updates
+//                viewModel.getFavoritesRecipes().observe((LifecycleOwner) context, favoritesRecipes ->
+//                        updatePresentedRecipes(favoritesRecipes));
+//
+//            } else {
                 //Stop observing for changes on favorites recipes -
                 // Else it make a duplicates, so we want one active observer
-                viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
+          //      viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
 
                 //Get updated list of all recipes - for recyclerview updates
-                updatePresentedRecipes(viewModel.getRecipes().getValue());
+                updatePresentedRecipes(viewModel.getUsers().getValue());
 
                 //Observer for changes on all recipes  - for recyclerview updates
-                viewModel.getRecipes().observe((LifecycleOwner) context, recipes ->
-                        updatePresentedRecipes(recipes));
-            }
-        });*/
+                viewModel.getUsers().observe((LifecycleOwner) context, users ->
+                        updatePresentedRecipes(users));
+           // }
+      //  });
         /*----------------------------------------------------------------*/
 
     }
 
     //Populate list for recycler view with updated list
-    private void updatePresentedRecipes(List<Recipe> recipesList) {
+    private void updatePresentedRecipes(List<User> userList) {
         presentedRecipes.clear();
-        presentedRecipes.addAll(recipesList);
+        for (User user:  userList )
+            presentedRecipes.addAll(user.getRecipes());
         notifyDataSetChanged();
+
     }
 
     @NonNull

@@ -35,10 +35,10 @@ public class RecipesViewModel extends AndroidViewModel {
     RealTimeDBService realTimeDBService;
     DatabaseReference usersDBReference;
 
-//    private final SharedPreferences defaultSp;
+    //    private final SharedPreferences defaultSp;
 //    private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListener;
     SharedPreferenceFileHandler favorites;
-  //  private final SharedPreferences.OnSharedPreferenceChangeListener spListener;
+    //  private final SharedPreferences.OnSharedPreferenceChangeListener spListener;
 
     public RecipesViewModel(@NonNull Application application) {
         super(application);
@@ -111,7 +111,7 @@ public class RecipesViewModel extends AndroidViewModel {
     }
 
     /*----------------------------------------------------------------*/
-    public LiveData<List<User>> getRecipes() {
+    public LiveData<List<User>> getUsers() {
         if (userLiveData.getValue() == null)
             userLiveData.setValue(usersList);
         return userLiveData;
@@ -136,13 +136,10 @@ public class RecipesViewModel extends AndroidViewModel {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             User user = getUserFromSnapshot(dataSnapshot);
-            for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+            for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                 Recipe rec = dataSnapshot1.getValue(Recipe.class);
-
                 user.getRecipes().add(rec);
-                
             }
-
             usersList.add(user);
             userLiveData.setValue(usersList);
 //            if (favorites.contains(user.getId())) {
@@ -157,6 +154,7 @@ public class RecipesViewModel extends AndroidViewModel {
             usersList.remove(user);
             usersList.add(user);
             userLiveData.setValue(usersList);
+
 //            if (favorites.contains(user.getId())) {
 //                favoritesRecipesList.remove(user);
 //                favoritesRecipesList.add(user);
