@@ -3,12 +3,12 @@ package com.example.recipebook.utils;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class FirebaseService {
-    private static FirebaseService fbsInstance = null;
+public class RealTimeDBService {
+    private static RealTimeDBService rtdbServiceInstance = null;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
-    private FirebaseService() {
+    private RealTimeDBService() {
         this.firebaseDatabase = FirebaseDatabase.getInstance();
         this.databaseReference = FirebaseDatabase.getInstance().getReference();
     }
@@ -21,9 +21,9 @@ public class FirebaseService {
         return firebaseDatabase.getReference(path);
     }
 
-    public static FirebaseService getInstance() {
-        if (fbsInstance == null)
-            fbsInstance = new FirebaseService();
-        return fbsInstance;
+    public static RealTimeDBService getInstance() {
+        if (rtdbServiceInstance == null)
+            rtdbServiceInstance = new RealTimeDBService();
+        return rtdbServiceInstance;
     }
 }

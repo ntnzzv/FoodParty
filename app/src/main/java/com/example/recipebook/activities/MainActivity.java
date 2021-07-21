@@ -13,34 +13,31 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipebook.utils.Authentication;
+import com.example.recipebook.utils.AuthGoogleService;
 import com.example.recipebook.utils.Constants;
-import com.example.recipebook.utils.Instances;
+
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import static com.example.recipebook.utils.Constants.SIGN_IN_CODE_ID;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final int SIGN_IN_CODE_ID = 222;
     RecipesAdapter adapter;
     RecipesViewModel viewModel;
 
     private boolean userAlreadySignedFlag;
 
     private NetworkStateReceiver netStateReceiver;
-
+    AuthGoogleService authGoogleService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        authGoogleService=AuthGoogleService.getInstance();
         checkIfUserSigned();
 
         viewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
@@ -96,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.signin_item:
                 intent = new Intent(this, LoginActivity.class);
-                startActivityForResult(intent, Constants.SIGN_IN_CODE_ID);
+                startActivityForResult(intent, SIGN_IN_CODE_ID);
             case R.id.logout_item:
                 //...need to handle...
 
@@ -130,29 +127,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void checkIfUserSigned() {
-        Instances.currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (Instances.currentUser != null) {
-            //user already signed
+        if (authGoogleService.getFirebaseCurrentUser() != null) {
             userAlreadySignedFlag=true;
             //...need to handle...
         } else {
-            //user not signed
             userAlreadySignedFlag=false;
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent,SIGN_IN_CODE_ID);
         }
     }
-//    private FirebaseAuth mAuth;
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        FirebaseUser user = mAuth.getCurrentUser();
-//        if (user != null) {
-//
-//        }
-//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

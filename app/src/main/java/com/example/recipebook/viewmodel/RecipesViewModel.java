@@ -12,7 +12,7 @@ import androidx.preference.PreferenceManager;
 
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
-import com.example.recipebook.utils.FirebaseService;
+import com.example.recipebook.utils.RealTimeDBService;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +34,7 @@ public class RecipesViewModel extends AndroidViewModel {
     List<Recipe> favoritesRecipesList;
     boolean favoritesOnlyFlag;
 
-    FirebaseService fbs;
+    RealTimeDBService realTimeDBService;
     DatabaseReference recipesDBReference;
 
     private final SharedPreferences defaultSp;
@@ -99,8 +99,8 @@ public class RecipesViewModel extends AndroidViewModel {
         /*----------------------------------------------------------------*/
 
         //Firebase configurations
-        fbs = FirebaseService.getInstance();
-        recipesDBReference = fbs.getDBReference(RECIPES_DB_NAME);
+        realTimeDBService = RealTimeDBService.getInstance();
+        recipesDBReference = realTimeDBService.getDBReference(RECIPES_DB_NAME);
         recipesDBReference.addChildEventListener(new RecipeEventListener());
     }
 

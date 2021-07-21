@@ -4,20 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.recipebook.R;
-import com.example.recipebook.activities.AddRecipeActivity;
-import com.example.recipebook.activities.MainActivity;
-import com.example.recipebook.entities.Recipe;
-import com.example.recipebook.utils.FirebaseService;
-import com.example.recipebook.utils.ImageHandler;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.database.DatabaseReference;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
-import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 public class BatteryInfoReceiver extends BroadcastReceiver {
     @Override

@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.recipebook.utils.FirebaseService;
+import com.example.recipebook.utils.RealTimeDBService;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
@@ -49,7 +49,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     private ArrayList<String> ingredientsList = new ArrayList<>();
     private ArrayList<String> instructionsList = new ArrayList<>();
 
-    FirebaseService fbs;
+    RealTimeDBService realTimeDBService;
     private DatabaseReference ingredientsFieldReference;
     private DatabaseReference instructionsFieldReference;
     private DatabaseReference recipesDBReference;
@@ -77,7 +77,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
                 getString(R.string.preference_favorites_key));
 
         //Firebase configurations...
-        fbs = FirebaseService.getInstance();
+        realTimeDBService = RealTimeDBService.getInstance();
         ingredientsFieldReference = getReferenceToRecipeField(INGREDIENTS_FIELD_NAME);
         instructionsFieldReference = getReferenceToRecipeField(INSTRUCTIONS_FIELD_NAME);
 
@@ -113,11 +113,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
 
     /*  ------------------------------------------------    */
     private DatabaseReference getReferenceToRecipeField(String fieldName) {
-        return fbs.getReferenceByPath(getRecipePath() + "/" + fieldName);
+        return realTimeDBService.getReferenceByPath(getRecipePath() + "/" + fieldName);
     }
 
     private DatabaseReference getReferenceToRecipe() {
-        return fbs.getReferenceByPath(getRecipePath());
+        return realTimeDBService.getReferenceByPath(getRecipePath());
     }
 
     private String getRecipePath() {

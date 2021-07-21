@@ -5,19 +5,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.example.recipebook.activities.AddRecipeActivity;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.UUID;
 
 public final class ImageHandler {
 
@@ -50,7 +40,7 @@ public final class ImageHandler {
                             public void onSuccess(Uri uri) {
                                 Uri downloadUrl = uri;
 
-                                FirebaseService.getInstance().getDBReference("Recipes/")
+                                RealTimeDBService.getInstance().getDBReference("Recipes/")
                                         .child(userUid)
                                         .child(recipeName)
                                         .child("imageUrl").setValue(uri.toString());

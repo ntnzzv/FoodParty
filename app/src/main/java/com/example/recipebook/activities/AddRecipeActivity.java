@@ -22,13 +22,11 @@ import com.example.recipebook.adapters.InstructionsAdapter;
 import com.example.recipebook.R;
 import com.example.recipebook.broadcastreceivers.BatteryInfoReceiver;
 import com.example.recipebook.entities.Recipe;
-import com.example.recipebook.utils.Authentication;
-import com.example.recipebook.utils.FirebaseService;
+import com.example.recipebook.utils.RealTimeDBService;
 import com.example.recipebook.utils.ImageHandler;
 import com.example.recipebook.utils.Instances;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
 import java.io.IOException;
@@ -191,13 +189,13 @@ public class AddRecipeActivity extends AppCompatActivity {
                     String description = ((TextInputEditText)findViewById(R.id.description)).getEditableText().toString();
                     String type = ((AutoCompleteTextView)findViewById(R.id.dropdown)).getText().toString();
                     String recipeNAme = ((EditText)findViewById(R.id.et_recipe_name)).getText().toString();
-                    String userUid = Instances.currentUser.getUid();
+                    String userUid = Instances.firebaseUser.getUid();
                     recipe.setIngredients(ingredients);
                     recipe.setInstructions(instructions);
                     recipe.setDescription(description);
                     recipe.setRecipeName(recipeNAme);
                     recipe.setType(type);
-                    FirebaseService.getInstance().getDBReference("Recipes/").child(userUid).child(recipeNAme).setValue(recipe);
+                    RealTimeDBService.getInstance().getDBReference("Recipes/").child(userUid).child(recipeNAme).setValue(recipe);
 
                     ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
 
