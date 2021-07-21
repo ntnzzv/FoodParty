@@ -17,8 +17,8 @@ public final class ImageHandler {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
-        String recipePath = "Recipe/" + userUid + "/" + recipeName ;
         if (filePath != null) {
+
             // Code for showing progressDialog while uploading
             ProgressDialog progressDialog = new ProgressDialog(context);
             progressDialog.setTitle("Uploading...");
@@ -40,8 +40,8 @@ public final class ImageHandler {
                             public void onSuccess(Uri uri) {
                                 Uri downloadUrl = uri;
 
-                                RealTimeDBService.getInstance().getDBReference(userUid)
-                                        .child("Recipes/")
+                                RealTimeDBService.getInstance().getDBReference("users/")
+                                        .child(userUid)
                                         .child(recipeName)
                                         .child("imageUrl").setValue(uri.toString());
                                 //Do what you want with the url

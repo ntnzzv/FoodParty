@@ -10,4 +10,5 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="red">#DB1709</color>
     <color name="light_red">#DA0037</color>
+    <color name="light_green">#065520</color>
 </resources>

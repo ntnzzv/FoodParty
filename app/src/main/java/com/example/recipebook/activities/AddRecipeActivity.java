@@ -31,6 +31,7 @@ import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class AddRecipeActivity extends AppCompatActivity {
@@ -191,6 +192,8 @@ public class AddRecipeActivity extends AppCompatActivity {
                     String recipeNAme = ((EditText)findViewById(R.id.et_recipe_name)).getText().toString();
                     String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
 
+                    Collections.reverse(ingredients);
+                    Collections.reverse(instructions);
                     recipe.setIngredients(ingredients);
                     recipe.setInstructions(instructions);
                     recipe.setDescription(description);
@@ -200,7 +203,7 @@ public class AddRecipeActivity extends AppCompatActivity {
 
                     RealTimeDBService.getInstance().getDBReference("users").child(userUid).child(recipeNAme).setValue(recipe);
 
-                    //ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
+                    ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
 
 
 

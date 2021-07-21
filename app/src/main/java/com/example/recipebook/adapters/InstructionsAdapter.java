@@ -37,9 +37,7 @@ public class InstructionsAdapter extends RecyclerView.Adapter<InstructionsAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InstructionsAdapter.InstructionsViewHolder holder, int position) {
-
-    }
+    public void onBindViewHolder(@NonNull InstructionsAdapter.InstructionsViewHolder holder, int position) { }
 
 
     @Override
