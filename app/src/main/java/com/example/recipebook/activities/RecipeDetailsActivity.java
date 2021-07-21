@@ -240,20 +240,20 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         // Create the alert dialog
         AlertDialog dialog = builder.create();
 
-
-
         // Finally, display the alert dialog
         dialog.show();
         designDeleteButton(dialog);
     }
 
     private void designDeleteButton(AlertDialog dialog) {
+
         // Get the alert dialog buttons reference
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
         // Change the alert dialog buttons text and background color
-        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.white));
-        positiveButton.setBackgroundResource(R.color.red);
+        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.light_red));
     }
+
 
     private void handleFavoritesButton() {
         if (favoriteBtn.getTag() != null && favoriteBtn.getTag().toString().equals(FAVORITE_TAG)) {

@@ -195,7 +195,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                     recipe.setDescription(description);
                     recipe.setRecipeName(recipeNAme);
                     recipe.setType(type);
-                    RealTimeDBService.getInstance().getDBReference("Recipes/").child(userUid).child(recipeNAme).setValue(recipe);
+                    RealTimeDBService.getInstance().getDBReference(userUid).child("Recipes/").child(recipeNAme).setValue(recipe);
 
                     ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
 
