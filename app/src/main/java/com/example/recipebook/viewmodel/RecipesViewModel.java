@@ -1,17 +1,15 @@
 package com.example.recipebook.viewmodel;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.preference.PreferenceManager;
 
-import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.entities.User;
 import com.example.recipebook.utils.RealTimeDBService;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.firebase.database.ChildEventListener;
@@ -21,26 +19,26 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import static com.example.recipebook.utils.Constants.RECIPES_DB_NAME;
+import static com.example.recipebook.utils.Constants.USERS_DB_NAME;
 
 public class RecipesViewModel extends AndroidViewModel {
-    private MutableLiveData<List<Recipe>> recipesLiveData;
+    private MutableLiveData<List<User>> userLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
     private MutableLiveData<Boolean> favoritesOnlyLiveData = new MutableLiveData<>();
 
-    List<Recipe> recipesList;
+    List<User> usersList;
+
     List<Recipe> favoritesRecipesList;
     boolean favoritesOnlyFlag;
 
     RealTimeDBService realTimeDBService;
     DatabaseReference recipesDBReference;
 
-    private final SharedPreferences defaultSp;
-    private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListener;
+//    private final SharedPreferences defaultSp;
+//    private final SharedPreferences.OnSharedPreferenceChangeListener defaultSpListener;
     SharedPreferenceFileHandler favorites;
-    private final SharedPreferences.OnSharedPreferenceChangeListener spListener;
+  //  private final SharedPreferences.OnSharedPreferenceChangeListener spListener;
 
     public RecipesViewModel(@NonNull Application application) {
         super(application);
@@ -51,7 +49,7 @@ public class RecipesViewModel extends AndroidViewModel {
 
         //Get default SP file, there are a preference settings,
         // includes user's preference- to see all recipes or only his favorites.
-        defaultSp = PreferenceManager.getDefaultSharedPreferences(application);
+    /*    defaultSp = PreferenceManager.getDefaultSharedPreferences(application);
 
         //update flag to current preference value
         favoritesOnlyFlag = defaultSp.getBoolean(application.getString(R.string.favorites), false);
@@ -68,16 +66,16 @@ public class RecipesViewModel extends AndroidViewModel {
             }
         };
         defaultSp.registerOnSharedPreferenceChangeListener(defaultSpListener);
-
+*/
         /*----------------------------------------------------------------*/
 
         //Instance for class that handling with "FavoriteList.xml" Shared preference file (read, write, check...)
-        favorites = new SharedPreferenceFileHandler(application,
+    /*    favorites = new SharedPreferenceFileHandler(application,
                 application.getString(R.string.preference_favorites_file),
                 application.getString(R.string.preference_favorites_key));
-
+*/
         //Listener for changes in favorite file
-        spListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+       /* spListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
@@ -86,7 +84,7 @@ public class RecipesViewModel extends AndroidViewModel {
 
                 //Put all recipes in sp file to favorites list
                 favoritesRecipesList.clear();
-                recipesList.forEach(recipe -> {
+                usersList.forEach(recipe -> {
                     if (spFavorites.contains(recipe.getId()))
                         favoritesRecipesList.add(recipe);
                 });
@@ -95,28 +93,28 @@ public class RecipesViewModel extends AndroidViewModel {
             }
         };
         favorites.getShredPref().registerOnSharedPreferenceChangeListener(spListener);
-
+*/
         /*----------------------------------------------------------------*/
 
         //Firebase configurations
         realTimeDBService = RealTimeDBService.getInstance();
-        recipesDBReference = realTimeDBService.getDBReference(RECIPES_DB_NAME);
-        recipesDBReference.addChildEventListener(new RecipeEventListener());
+        recipesDBReference = realTimeDBService.getDBReference(USERS_DB_NAME);
+        recipesDBReference.addChildEventListener(new UserEventListener());
     }
 
     /*----------------------------------------------------------------*/
     private void initializeVariables() {
-        recipesList = new ArrayList<>();
+        usersList = new ArrayList<>();
         favoritesRecipesList = new ArrayList<>();
-        recipesLiveData = new MutableLiveData<>();
+        userLiveData = new MutableLiveData<>();
         favoritesRecipesLiveData = new MutableLiveData<>();
     }
 
     /*----------------------------------------------------------------*/
-    public LiveData<List<Recipe>> getRecipes() {
-        if (recipesLiveData.getValue() == null)
-            recipesLiveData.setValue(recipesList);
-        return recipesLiveData;
+    public LiveData<List<User>> getRecipes() {
+        if (userLiveData.getValue() == null)
+            userLiveData.setValue(usersList);
+        return userLiveData;
     }
 
     public LiveData<List<Recipe>> getFavoritesRecipes() {
@@ -134,41 +132,45 @@ public class RecipesViewModel extends AndroidViewModel {
     }
 
     /*----------------------------------------------------------------*/
-    private class RecipeEventListener implements ChildEventListener {
+    private class UserEventListener implements ChildEventListener {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            Recipe recipe = getRecipeFromSnapshot(dataSnapshot);
-            recipesList.add(recipe);
-            recipesLiveData.setValue(recipesList);
-            if (favorites.contains(recipe.getId())) {
-                favoritesRecipesList.add(recipe);
-                favoritesRecipesLiveData.setValue(favoritesRecipesList);
+            User user = getUserFromSnapshot(dataSnapshot);
+            for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+          //      user.setRecipes(dataSnapshot1.getValue(Recipe.class));
+
             }
+            usersList.add(user);
+            userLiveData.setValue(usersList);
+//            if (favorites.contains(user.getId())) {
+//                favoritesRecipesList.add(user);
+//                favoritesRecipesLiveData.setValue(favoritesRecipesList);
+            //      }
         }
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            Recipe recipe = getRecipeFromSnapshot(dataSnapshot);
-            recipesList.remove(recipe);
-            recipesList.add(recipe);
-            recipesLiveData.setValue(recipesList);
-            if (favorites.contains(recipe.getId())) {
-                favoritesRecipesList.remove(recipe);
-                favoritesRecipesList.add(recipe);
-                favoritesRecipesLiveData.setValue(favoritesRecipesList);
-            }
+            User user = getUserFromSnapshot(dataSnapshot);
+            usersList.remove(user);
+            usersList.add(user);
+            userLiveData.setValue(usersList);
+//            if (favorites.contains(user.getId())) {
+//                favoritesRecipesList.remove(user);
+//                favoritesRecipesList.add(user);
+//                favoritesRecipesLiveData.setValue(favoritesRecipesList);
+//            }
 
         }
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            Recipe recipe = getRecipeFromSnapshot(dataSnapshot);
-            recipesList.remove(recipe);
-            recipesLiveData.setValue(recipesList);
-            if (favorites.contains(recipe.getId())) {
-                favoritesRecipesList.remove(recipe);
-                favoritesRecipesLiveData.setValue(favoritesRecipesList);
-            }
+            User user = getUserFromSnapshot(dataSnapshot);
+            usersList.remove(user);
+            userLiveData.setValue(usersList);
+//            if (favorites.contains(user.getId())) {
+//                favoritesRecipesList.remove(user);
+//                favoritesRecipesLiveData.setValue(favoritesRecipesList);
+            // }
         }
 
         @Override
@@ -179,10 +181,12 @@ public class RecipesViewModel extends AndroidViewModel {
         public void onCancelled(@NonNull DatabaseError databaseError) {
         }
 
-        private Recipe getRecipeFromSnapshot(@NonNull DataSnapshot dataSnapshot) {
-            Recipe recipe = dataSnapshot.getValue(Recipe.class);
-            recipe.setId(dataSnapshot.getKey());
-            return recipe;
+        private User getUserFromSnapshot(@NonNull DataSnapshot dataSnapshot) {
+            User user = dataSnapshot.getValue(User.class);
+            user.setId(dataSnapshot.getKey());
+            return user;
         }
     }
 }
+
+

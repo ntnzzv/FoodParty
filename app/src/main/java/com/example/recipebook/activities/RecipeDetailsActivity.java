@@ -30,7 +30,7 @@ import static com.example.recipebook.utils.Constants.DEFAULT_TAG;
 import static com.example.recipebook.utils.Constants.FAVORITE_TAG;
 import static com.example.recipebook.utils.Constants.INGREDIENTS_FIELD_NAME;
 import static com.example.recipebook.utils.Constants.INSTRUCTIONS_FIELD_NAME;
-import static com.example.recipebook.utils.Constants.RECIPES_DB_NAME;
+import static com.example.recipebook.utils.Constants.USERS_DB_NAME;
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 
 public class RecipeDetailsActivity extends AppCompatActivity implements View.OnClickListener {
@@ -121,7 +121,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     }
 
     private String getRecipePath() {
-        return RECIPES_DB_NAME + "/" + recipe.getId();
+        return USERS_DB_NAME + "/" + recipe.getId();
     }
 
     /*  ------------------------------------------------    */

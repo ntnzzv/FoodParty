@@ -41,7 +41,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         //Observer for favoritesOnlyFlag-
         //If true we want only favorites recipes in recycler view
         //Else, we want to show all recipes
-        viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
+   /*     viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
 
             if (favoritesOnlyFlag) {
                 //Stop observing for changes on all recipes
@@ -67,7 +67,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 viewModel.getRecipes().observe((LifecycleOwner) context, recipes ->
                         updatePresentedRecipes(recipes));
             }
-        });
+        });*/
         /*----------------------------------------------------------------*/
 
     }
