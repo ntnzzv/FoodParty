@@ -33,13 +33,11 @@ public class InstructionsAdapter extends RecyclerView.Adapter<InstructionsAdapte
     public InstructionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.instructions_ingridients, parent , false);
-        return new InstructionsViewHolder(view);
+        return new InstructionsViewHolder(view,instructions.get(0));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InstructionsAdapter.InstructionsViewHolder holder, int position) {
-        holder.dataText.setText(instructions.get(position));
-    }
+    public void onBindViewHolder(@NonNull InstructionsAdapter.InstructionsViewHolder holder, int position) { }
 
 
     @Override
@@ -49,10 +47,10 @@ public class InstructionsAdapter extends RecyclerView.Adapter<InstructionsAdapte
 
     public class InstructionsViewHolder extends RecyclerView.ViewHolder{
         EditText dataText;
-        public InstructionsViewHolder(@NonNull View itemView) {
+        public InstructionsViewHolder(@NonNull View itemView,String text) {
             super(itemView);
             dataText = (EditText)itemView.findViewById(R.id.text);
-
+            dataText.setText(text);
 
             itemView.findViewById(R.id.delete).setOnClickListener(v -> {
                 instructions.remove(getAdapterPosition());
@@ -61,7 +59,6 @@ public class InstructionsAdapter extends RecyclerView.Adapter<InstructionsAdapte
                 notifyItemRangeChanged(getAdapterPosition(), instructions.size());
             });
         }
-
 
     }
 }
