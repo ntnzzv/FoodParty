@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
-import android.widget.Toast;
 
 import com.example.recipebook.R;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
@@ -23,13 +22,12 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
         float batteryPercent = getBatteryPercent(level, scale);
 
         if (batteryPercent <30 && !isCharging) {
-            Toast.makeText(context, "Low battery", Toast.LENGTH_LONG).show();
             new FancyGifDialog.Builder(context)
                     .setTitle("Low battery")
                     .setMessage("Please charge your battery or save your recipe, it may be lost")
                     .setTitleTextColor(R.color.browser_actions_title_color)
                     .setDescriptionTextColor(R.color.browser_actions_text_color)
-                    .setNegativeBtnText("Cancel")
+                    .setNegativeBtnText("Leave me alone")
                     .setPositiveBtnBackground(R.color.common_google_signin_btn_text_dark)
                     .setPositiveBtnText("Ok")
                     .setNegativeBtnBackground(R.color.purple_200)

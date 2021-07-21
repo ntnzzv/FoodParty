@@ -11,11 +11,10 @@ public class SharedPreferenceFileHandler {
     private final Context context;
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
-    private final String fileName, key;
+    private final String  key;
 
     public SharedPreferenceFileHandler(Context context, String fileName, String key) {
         this.context = context;
-        this.fileName = fileName;
         this.key = key;
         sharedPref = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
     }
