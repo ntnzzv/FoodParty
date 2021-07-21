@@ -136,10 +136,11 @@ public class RecipesViewModel extends AndroidViewModel {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             User user = getUserFromSnapshot(dataSnapshot);
-            for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-          //      user.setRecipes(dataSnapshot1.getValue(Recipe.class));
-
-            }
+            Recipe rec = dataSnapshot.getValue(Recipe.class);
+      /*      for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                Recipe rec = dataSnapshot.getValue(Recipe.class);
+                user.getRecipes().add(rec);
+            }*/
             usersList.add(user);
             userLiveData.setValue(usersList);
 //            if (favorites.contains(user.getId())) {

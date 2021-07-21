@@ -190,14 +190,17 @@ public class AddRecipeActivity extends AppCompatActivity {
                     String type = ((AutoCompleteTextView)findViewById(R.id.dropdown)).getText().toString();
                     String recipeNAme = ((EditText)findViewById(R.id.et_recipe_name)).getText().toString();
                     String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
+
                     recipe.setIngredients(ingredients);
                     recipe.setInstructions(instructions);
                     recipe.setDescription(description);
                     recipe.setRecipeName(recipeNAme);
                     recipe.setType(type);
-                    RealTimeDBService.getInstance().getDBReference(userUid).child("Recipes/").child(recipeNAme).setValue(recipe);
 
-                    ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
+
+                    RealTimeDBService.getInstance().getDBReference("users").child(userUid).child(recipeNAme).setValue(recipe);
+
+                    //ImageHandler.UploadImage(this,this,filePath,userUid,recipeNAme);
 
 
 
