@@ -42,24 +42,25 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         //Observer for favoritesOnlyFlag-
         //If true we want only favorites recipes in recycler view
         //Else, we want to show all recipes
- //       viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
+        viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
 
-//            if (favoritesOnlyFlag) {
-//                //Stop observing for changes on all recipes
-//                // Else it make a duplicates, so we want one active observer
-//                viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
-//
-//                //Get updated list of favorites recipes - for recyclerview updates
-//                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
-//
-//                //Observer for changes only on favorites recipes  - for recyclerview updates
-//                viewModel.getFavoritesRecipes().observe((LifecycleOwner) context, favoritesRecipes ->
-//                        updatePresentedRecipes(favoritesRecipes));
-//
-//            } else {
+            if (favoritesOnlyFlag) {
+                //Stop observing for changes on all recipes
+                // Else it make a duplicates, so we want one active observer
+                viewModel.getUsers().removeObservers((LifecycleOwner) context);
+
+                //Get updated list of favorites recipes - for recyclerview updates
+                updatePresentedRecipes2(viewModel.getFavoritesRecipes().getValue());
+
+                //Observer for changes only on favorites recipes  - for recyclerview updates
+                viewModel.getFavoritesRecipes().observe((LifecycleOwner) context, favoritesRecipes ->
+                        updatePresentedRecipes2(favoritesRecipes));
+
+
+            } else {
                 //Stop observing for changes on favorites recipes -
                 // Else it make a duplicates, so we want one active observer
-          //      viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
+                viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
 
                 //Get updated list of all recipes - for recyclerview updates
                 updatePresentedRecipes(viewModel.getUsers().getValue());
@@ -67,8 +68,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 //Observer for changes on all recipes  - for recyclerview updates
                 viewModel.getUsers().observe((LifecycleOwner) context, users ->
                         updatePresentedRecipes(users));
-           // }
-      //  });
+            }
+        });
         /*----------------------------------------------------------------*/
 
     }
@@ -76,8 +77,15 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
     //Populate list for recycler view with updated list
     private void updatePresentedRecipes(List<User> userList) {
         presentedRecipes.clear();
-        for (User user:  userList )
+        for (User user : userList)
             presentedRecipes.addAll(user.getRecipes());
+        notifyDataSetChanged();
+
+    }
+
+    private void updatePresentedRecipes2(List<Recipe> recipes) {
+        presentedRecipes.clear();
+        presentedRecipes.addAll(recipes);
         notifyDataSetChanged();
 
     }
@@ -126,8 +134,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             nameTv.setText(recipe.getRecipeName());
             shortDescriptionTv.setText(recipe.getDescription());
 
-            String imgUrl=recipe.getImageUrl();
-            if(imgUrl.equals(""))
+            String imgUrl = recipe.getImageUrl();
+            if (imgUrl.equals(""))
                 imageView.setBackgroundResource(R.drawable.no_image);
             else
                 Picasso.get().load(recipe.getImageUrl()).into(imageView);
