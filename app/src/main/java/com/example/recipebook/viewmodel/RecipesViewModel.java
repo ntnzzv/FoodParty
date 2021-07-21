@@ -134,14 +134,12 @@ public class RecipesViewModel extends AndroidViewModel {
     /*----------------------------------------------------------------*/
     private class UserEventListener implements ChildEventListener {
         @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            User user = getUserFromSnapshot(dataSnapshot);
-            for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                Recipe rec = dataSnapshot1.getValue(Recipe.class);
-                user.getRecipes().add(rec);
-            }
+        public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
+            User user = getUserFromSnapshot(userSnapshot);
+            updateUserRecipesList(userSnapshot, user);
             usersList.add(user);
             userLiveData.setValue(usersList);
+
 //            if (favorites.contains(user.getId())) {
 //                favoritesRecipesList.add(user);
 //                favoritesRecipesLiveData.setValue(favoritesRecipesList);
@@ -149,9 +147,10 @@ public class RecipesViewModel extends AndroidViewModel {
         }
 
         @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            User user = getUserFromSnapshot(dataSnapshot);
+        public void onChildChanged(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
+            User user = getUserFromSnapshot(userSnapshot);
             usersList.remove(user);
+            updateUserRecipesList(userSnapshot, user);
             usersList.add(user);
             userLiveData.setValue(usersList);
 
@@ -162,6 +161,8 @@ public class RecipesViewModel extends AndroidViewModel {
 //            }
 
         }
+
+
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
@@ -186,6 +187,12 @@ public class RecipesViewModel extends AndroidViewModel {
             User user = dataSnapshot.getValue(User.class);
             user.setId(dataSnapshot.getKey());
             return user;
+        }
+        private void updateUserRecipesList(@NonNull DataSnapshot userSnapshot, User user) {
+            for (DataSnapshot recipeSnapshot : userSnapshot.getChildren()) {
+                Recipe recipe = recipeSnapshot.getValue(Recipe.class);
+                user.getRecipes().add(recipe);
+            }
         }
     }
 }
