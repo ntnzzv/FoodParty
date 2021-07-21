@@ -21,9 +21,6 @@ import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
 
-import java.net.Authenticator;
-
-import static com.example.recipebook.utils.Constants.SIGN_IN_CODE_ID;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
 
 
@@ -98,10 +95,12 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, SIGN_IN_CODE_ID);
             case R.id.logout_item:
-                Instances.auth.signOut();
-                Instances.auth.gsc.signOut();
+                authGoogleService.signOut();
+                authGoogleService.getGoogleSignInClient(this).signOut();
                 intent = new Intent(this, LoginActivity.class);
-                startActivityForResult(intent, Constants.SIGN_IN_CODE_ID);
+                userAlreadySignedFlag=false;
+                startActivityForResult(intent, SIGN_IN_CODE_ID);
+
 
             default:
                 return false;
