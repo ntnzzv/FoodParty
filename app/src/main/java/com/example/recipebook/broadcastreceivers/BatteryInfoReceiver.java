@@ -32,7 +32,7 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
                     .setMessage("Please charge your battery or save your recipe, it may be lost")
                     .setTitleTextColor(R.color.browser_actions_title_color)
                     .setDescriptionTextColor(R.color.browser_actions_text_color)
-                    .setNegativeBtnText("Leave me alone")
+                    .setNegativeBtnText("Don't care")
                     .setPositiveBtnBackground(R.color.common_google_signin_btn_text_dark)
                     .setPositiveBtnText("Ok")
                     .setNegativeBtnBackground(R.color.purple_200)

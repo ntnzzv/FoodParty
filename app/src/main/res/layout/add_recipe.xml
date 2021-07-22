@@ -75,6 +75,7 @@
                     app:endIconContentDescription="Add Instruction"
                     app:endIconDrawable="@drawable/outline_add_24"
                     app:endIconMode="custom"
+                    app:errorIconDrawable="@null"
                     app:helperText="Add using the '+' button"
                     app:helperTextEnabled="true">
 
@@ -117,6 +118,7 @@
                     app:endIconContentDescription="Add ingredient"
                     app:endIconDrawable="@drawable/outline_add_24"
                     app:endIconMode="custom"
+                    app:errorIconDrawable="@null"
                     app:helperText="Add using the '+' button"
                     app:helperTextEnabled="true">
 

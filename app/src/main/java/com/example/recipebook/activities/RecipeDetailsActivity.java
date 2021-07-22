@@ -8,6 +8,7 @@ import androidx.core.widget.TextViewCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.R;
@@ -56,7 +58,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     private DatabaseReference ingredientsFieldReference;
     private DatabaseReference instructionsFieldReference;
 
-
+    private NetworkStateReceiver netStateReceiver;
     SharedPreferenceFileHandler favorites;
     private String recipeId, creatorId;
 
@@ -65,6 +67,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
+        netStateReceiver = new NetworkStateReceiver();
 
         //From Intent
         recipe = getRecipeObject();
@@ -96,6 +99,20 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
 
         //UI updating
         InitializeActivity();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        registerReceiver(netStateReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        unregisterReceiver(netStateReceiver);
     }
 
     /*  ------------------------------------------------    */
