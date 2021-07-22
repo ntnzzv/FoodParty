@@ -170,15 +170,29 @@ public class RecipesViewModel extends AndroidViewModel {
             userList.add(user);
             usersLiveData.setValue(userList);
 
-
+            //for case of owner change recipe
             for (Recipe recipe : user.getRecipes())
                 if (favorites.contains(recipe.getId())) {
                     favoritesRecipesList.remove(recipe);
                     favoritesRecipesList.add(recipe);
                 }
+            //for case of owner delete recipe
+            List<Recipe> favoritesRecipesListNew = favoritesRecipesList;
+
+            favoritesRecipesList.removeIf(recipe -> ownerDeleteRecipe(user, recipe));
+
+//            for (Recipe recipe : favoritesRecipesListNew)
+//                if (ownerDeleteRecipe(user, recipe))
+//                    favoritesRecipesList.remove(recipe);
+
             favoritesRecipesLiveData.setValue(favoritesRecipesList);
 
 
+        }
+
+        private boolean ownerDeleteRecipe(User user, Recipe recipe) {
+            return recipe.getCreatorId().equals(user.getId()) //this is the owner of recipe ?
+                    && !user.getRecipes().contains(recipe);//owner delete this recipe ?
         }
 
 
