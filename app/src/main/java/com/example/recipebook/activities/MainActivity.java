@@ -51,9 +51,7 @@ public class MainActivity extends AppCompatActivity {
         //Broadcast receiver for network state
         netStateReceiver = new NetworkStateReceiver();
 
-        //foreground service
-        Intent intent = new Intent(this, MyForegroundService.class);
-        startForegroundService(intent);
+
 
     }
 

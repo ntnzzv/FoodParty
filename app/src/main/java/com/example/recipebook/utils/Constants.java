@@ -10,4 +10,8 @@ public class Constants {
 
     public static final String USER_SIGNED = "userSigned";
 
+    public static final String CONTEXT = "Context";
+    public static final String FILE_PATH = "filePath";
+    public static final String RECIPE_NAME = "recipeName";
+    public static final String USER_UID = "userUid";
 }

@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
         app:iconSpaceReserved="false"
-        app:key="favorites"
+        app:key="@string/favorites"
         app:title="@string/favorites_msg" />
     <SwitchPreference
         app:iconSpaceReserved="false"
-        app:key="Added"
+        app:key="@string/added"
         app:title="@string/added_msg" />
 </PreferenceScreen>
 

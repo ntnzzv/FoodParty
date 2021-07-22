@@ -73,15 +73,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         });
         /*----------------------------------------------------------------*/
 //        viewModel.getShowOnlyMineFlag().observe((LifecycleOwner) context, showOnlyMineFlag -> {
-//            if (showOnlyMineFlag){
+//            if (showOnlyMineFlag) {
 //                presentedRecipes.removeIf(recipe ->
 //                        !recipe.getCreatorId().
 //                                equals(AuthGoogleService.getInstance().getFirebaseCurrentUser()));
-//            }
-//            else {
-//                if(viewModel.getFavoritesOnlyFlag().getValue())
+//            } else {
+//                if (viewModel.getFavoritesOnlyFlag().getValue())
 //                    updatePresentedRecipes2(viewModel.getFavoritesRecipes().getValue());
-//
 //                else
 //                    updatePresentedRecipes(viewModel.getUsers().getValue());
 //

@@ -14,7 +14,7 @@ import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.entities.User;
 import com.example.recipebook.firebase.RealTimeDBService;
-import com.example.recipebook.utils.handlers.SharedPreferenceFileHandler;
+import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,13 +30,13 @@ public class RecipesViewModel extends AndroidViewModel {
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
     //  private MutableLiveData<List<Recipe>> recipesLiveData;
     private MutableLiveData<Boolean> favoritesOnlyLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> showOnlyMineLiveData = new MutableLiveData<>();
+    //private MutableLiveData<Boolean> showOnlyMineLiveData = new MutableLiveData<>();
 
     List<User> userList;
     List<Recipe> favoritesRecipesList;
     List<Recipe> recipesList;
     boolean favoritesOnlyFlag;
-    boolean showOnlyMineFlag;
+  //  boolean showOnlyMineFlag;
 
     RealTimeDBService realTimeDBService;
     DatabaseReference usersDBReference;
@@ -50,7 +50,7 @@ public class RecipesViewModel extends AndroidViewModel {
     public RecipesViewModel(@NonNull Application application) {
         super(application);
 
-        initializeVariables();
+
 
         /*----------------------------------------------------------------*/
 
@@ -60,6 +60,9 @@ public class RecipesViewModel extends AndroidViewModel {
 
         //update flag to current preference value
         favoritesOnlyFlag = defaultSp.getBoolean(application.getString(R.string.favorites), false);
+        //showOnlyMineFlag = defaultSp.getBoolean(application.getString(R.string.added), false);
+        initializeVariables();
+
 
         //Listener for changes in default SP file
         defaultSpListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -70,10 +73,10 @@ public class RecipesViewModel extends AndroidViewModel {
                     //Set LiveData too, in order to wake up the observer in RecipeAdapter
                     favoritesOnlyLiveData.setValue(favoritesOnlyFlag);
                 }
-                if (key.equals(application.getString(R.string.added))) {
-                    showOnlyMineFlag= prefs.getBoolean(application.getString(R.string.added), false);
-                    showOnlyMineLiveData.setValue(showOnlyMineFlag);
-                }
+//                if (key.equals(application.getString(R.string.added))) {
+//                    showOnlyMineFlag= prefs.getBoolean(application.getString(R.string.added), false);
+//                    showOnlyMineLiveData.setValue(showOnlyMineFlag);
+//                }
             }
         };
         defaultSp.registerOnSharedPreferenceChangeListener(defaultSpListener);
@@ -151,12 +154,12 @@ public class RecipesViewModel extends AndroidViewModel {
         }
         return favoritesOnlyLiveData;
     }
-    public LiveData<Boolean> getShowOnlyMineFlag() {
-        if (showOnlyMineLiveData.getValue() == null) {
-            showOnlyMineLiveData.setValue(showOnlyMineFlag);
-        }
-        return showOnlyMineLiveData;
-    }
+//    public LiveData<Boolean> getShowOnlyMineFlag() {
+//        if (showOnlyMineLiveData.getValue() == null) {
+//            showOnlyMineLiveData.setValue(showOnlyMineFlag);
+//        }
+//        return showOnlyMineLiveData;
+//    }
     /*----------------------------------------------------------------*/
     private class UserEventListener implements ChildEventListener {
         @Override

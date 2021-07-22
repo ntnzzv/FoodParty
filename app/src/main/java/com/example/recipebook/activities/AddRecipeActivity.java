@@ -27,7 +27,8 @@ import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
-import com.example.recipebook.utils.handlers.ImageHandler;
+import com.example.recipebook.services.MyForegroundService;
+import com.example.recipebook.utils.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
@@ -36,6 +37,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
+
+import static com.example.recipebook.utils.Constants.RECIPE_NAME;
+import static com.example.recipebook.utils.Constants.USER_UID;
 
 
 public class AddRecipeActivity extends AppCompatActivity {
@@ -231,10 +235,20 @@ public class AddRecipeActivity extends AppCompatActivity {
                     //add new recipe to database
                     RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipeNameText).setValue(recipe);
 
+                    //foreground service
+                    Intent intent = new Intent(this, MyForegroundService.class);
+
+                    intent.putExtra(Constants.FILE_PATH,filePath);
+                    intent.putExtra(RECIPE_NAME,recipeNameText);
+                    intent.putExtra(USER_UID,userUid);
+
+                    startForegroundService(intent);
+
                     //add image to storage cloud and then update imageUrl in DB
-                    ImageHandler.UploadImage(this, this, filePath, userUid, recipeNameText);
+                  //  ImageHandler.UploadImage( filePath, userUid, recipeNameText);
 
-
+                    //back to main activity
+                    finish();
                 })
                 .OnNegativeClicked(() -> Toast.makeText(AddRecipeActivity.this, "Submission canceled", Toast.LENGTH_SHORT).show())
                 .build();
