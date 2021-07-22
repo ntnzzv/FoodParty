@@ -21,6 +21,8 @@ public class NetworkStateReceiver extends BroadcastReceiver {
 
         if (state != State.CONNECTED)
             Toast.makeText(context, "Network OFF", Toast.LENGTH_LONG).show();
+        if(state == State.CONNECTED)
+            Toast.makeText(context, "Network is back ON", Toast.LENGTH_LONG).show();
 
     }
 }

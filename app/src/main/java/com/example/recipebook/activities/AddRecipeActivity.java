@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -21,6 +23,7 @@ import com.example.recipebook.adapters.IngredientsAdapter;
 import com.example.recipebook.adapters.InstructionsAdapter;
 import com.example.recipebook.R;
 import com.example.recipebook.broadcastreceivers.BatteryInfoReceiver;
+import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
@@ -48,6 +51,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     ArrayList<String> ingredients = new ArrayList<>();
 
     TextInputEditText instructionTextInput, ingredientTextInput;
+    private NetworkStateReceiver netStateReceiver;
 
     private Uri filePath;
 
@@ -58,16 +62,19 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_recipe);
+        netStateReceiver = new NetworkStateReceiver();
 
         InitializeActivity();
 
         batteryInfoReceiver = new BatteryInfoReceiver();
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
-
+        registerReceiver(netStateReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         //create intent filter and register receiver to get battery info changes
         registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
@@ -75,6 +82,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(netStateReceiver);
 
         //unregister receivers
         unregisterReceiver(batteryInfoReceiver);
@@ -146,6 +154,20 @@ public class AddRecipeActivity extends AppCompatActivity {
         editTextFilledExposedDropdown.setAdapter(adapter);
     }
 
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to exit? Any entered data will be lost")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        AddRecipeActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
     /*-------------------BUTTONS-HANDLERS-----------------------------*/
 
     // Select image btn pressed
@@ -159,6 +181,34 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     //save btn pressed
     public void onSave(View view) {
+
+        TextInputLayout description = findViewById(R.id.outlinedTextField);
+        String descriptionText = ((TextInputEditText)findViewById(R.id.description)).getEditableText().toString();
+        TextInputLayout type = findViewById(R.id.spinner_mealType);
+        String typeText = ((AutoCompleteTextView)findViewById(R.id.dropdown)).getEditableText().toString();
+        EditText recipeName = findViewById(R.id.et_recipe_name);
+        String recipeNameText = recipeName.getEditableText().toString();
+        String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
+        TextInputLayout instructionsLayout = findViewById(R.id.textInput_instruction);
+        TextInputLayout ingredientsLayout = findViewById(R.id.textInput_ingredient);
+
+        description.setErrorEnabled(false);
+        type.setErrorEnabled(false);
+        recipeName.setError(null);
+        instructionsLayout.setErrorEnabled(false);
+        ingredientsLayout.setErrorEnabled(false);
+
+        if(descriptionText.isEmpty() || typeText.isEmpty() || recipeNameText.isEmpty() || ingredients.isEmpty() || instructions.isEmpty()){
+
+           if(descriptionText.isEmpty()) description.setError("Please enter description");
+           if(typeText.isEmpty()) type.setError("Please choose a type");
+           if(recipeNameText.isEmpty())recipeName.setError("Please enter a recipe name");
+           if(instructions.isEmpty())instructionsLayout.setError("Please add instructions");
+           if(ingredients.isEmpty())ingredientsLayout.setError("Please add ingredients");
+            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         new FancyGifDialog.Builder(this)
                 .setTitle(R.string.save_dialog_title) // You can also send title like R.string.from_resources
                 .setMessage(R.string.save_dialog_msg) // or pass like R.string.description_from_resources
@@ -173,22 +223,16 @@ public class AddRecipeActivity extends AppCompatActivity {
                 .OnPositiveClicked(() -> {
                     Toast.makeText(AddRecipeActivity.this, R.string.recipe_submitted, Toast.LENGTH_SHORT).show();
 
-                    String description = ((TextInputEditText) findViewById(R.id.description)).getEditableText().toString();
-                    String type = ((AutoCompleteTextView) findViewById(R.id.dropdown)).getText().toString();
-                    String recipeName = ((EditText) findViewById(R.id.et_recipe_name)).getText().toString();
-
-                    String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
-
                     Collections.reverse(ingredients);
                     Collections.reverse(instructions);
 
-                    Recipe recipe = new Recipe(recipeName, description, ingredients, instructions, type);
+                    Recipe recipe = new Recipe(recipeNameText, descriptionText, ingredients, instructions, typeText);
 
                     //add new recipe to database
-                    RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipeName).setValue(recipe);
+                    RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipeNameText).setValue(recipe);
 
                     //add image to storage cloud and then update imageUrl in DB
-                    ImageHandler.UploadImage(this, this, filePath, userUid, recipeName);
+                    ImageHandler.UploadImage(this, this, filePath, userUid, recipeNameText);
 
 
                 })
