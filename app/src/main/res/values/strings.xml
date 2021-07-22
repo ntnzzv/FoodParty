@@ -17,11 +17,10 @@
     <string name="preferences_file">com.example.recipebook_preferences</string>
     <string name="favorites">favorites</string>
     <string name="add">Add</string>
-    <string name="select_image">select image</string>
     <string name="finish">Finish</string>
     <string name="save">Save</string>
     <string name="add_image">Add Image</string>
-    <string name="uploadedimage">UploadedImage</string>
+    <string name="uploaded_image">UploadedImage</string>
     <string name="sign_in">Sign-In</string>
     <string name="sign_in_with_google">Sign In with Google</string>
     <string name="Use_without_an_account">Use without an account</string>
@@ -31,5 +30,11 @@
     <string name="delete_dialog_title">Delete confirmation</string>
     <string name="delete_dialog_msg">Ary you sure you want to delete this recipe?</string>
     <string name="delete_dialog_btn">Delete</string>
+    <string name="save_dialog_title">Almost done!</string>
+    <string name="save_dialog_msg">Have your forgot to add something? press Cancel Otherwise press Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+    <string name="recipe_submitted">Recipe submitted!</string>
+    <string name="select_image">Select Image from here...</string>
 
 </resources>

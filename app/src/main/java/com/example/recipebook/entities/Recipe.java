@@ -6,6 +6,8 @@ import java.util.Objects;
 
 public class Recipe implements Serializable {
     private String id="";
+    private String creatorId="";
+
     private String recipeName="";
     private String description="";
     private String imageUrl="";
@@ -13,8 +15,17 @@ public class Recipe implements Serializable {
     private ArrayList<String> instructions = new ArrayList<>();
     private String type="";
 
+    public Recipe(String recipeName, String description, ArrayList<String> ingredients, ArrayList<String> instructions, String type) {
+        this.recipeName = recipeName;
+        this.description = description;
+        this.ingredients = ingredients;
+        this.instructions = instructions;
+        this.type = type;
+    }
+
     public Recipe() {
     }
+
 
     /*------------------------SETTERS---------------------------------*/
     public void setId(String id) {
@@ -43,6 +54,10 @@ public class Recipe implements Serializable {
 
     public void setInstructions(ArrayList<String> instructions) {
         this.instructions = instructions;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     /*------------------------GETTERS---------------------------------*/
@@ -74,6 +89,9 @@ public class Recipe implements Serializable {
         return instructions;
     }
 
+    public String getCreatorId() {
+        return creatorId;
+    }
     /*----------------------------------------------------------------*/
 
     @Override
@@ -88,6 +106,8 @@ public class Recipe implements Serializable {
     public int hashCode() {
         return Objects.hash(getId());
     }
+    /*----------------------------------------------------------------*/
+
 
 
 }

@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipebook.utils.AuthGoogleService;
-import com.example.recipebook.utils.Constants;
+import com.example.recipebook.services.MyForegroundService;
+import com.example.recipebook.firebase.AuthGoogleService;
 
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.viewmodel.RecipesViewModel;
@@ -37,16 +37,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         authGoogleService=AuthGoogleService.getInstance();
         checkIfUserSigned();
 
+        //get view model
         viewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
 
+        //set recycler view adapter
         setRecyclerViewAdapter();
 
         //Broadcast receiver for network state
         netStateReceiver = new NetworkStateReceiver();
 
+        //foreground service
+        Intent intent = new Intent(this, MyForegroundService.class);
+        startForegroundService(intent);
 
     }
     @Override
@@ -100,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, LoginActivity.class);
                 userAlreadySignedFlag=false;
                 startActivityForResult(intent, SIGN_IN_CODE_ID);
-
-
             default:
                 return false;
         }
@@ -123,13 +127,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*----------------------------------------------------------------*/
-    public void AddRecipe(View view) {
+
+    //add button handler
+    public void onAddRecipe(View view) {
         Intent intent = new Intent(this, AddRecipeActivity.class);
         startActivity(intent);
 
     }
     /*----------------------------------------------------------------*/
-
 
     private void checkIfUserSigned() {
         if (authGoogleService.getFirebaseCurrentUser() != null) {
@@ -141,13 +146,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //After login activity closed
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK)
             if (requestCode == SIGN_IN_CODE_ID) {
                 userAlreadySignedFlag = data.getExtras().getBoolean(USER_SIGNED);
-                //...need to handle...
             }
     }
 

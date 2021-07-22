@@ -1,4 +1,4 @@
-package com.example.recipebook.utils;
+package com.example.recipebook.firebase;
 
 import androidx.appcompat.app.AppCompatActivity;
 

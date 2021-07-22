@@ -1,4 +1,4 @@
-package com.example.recipebook.utils;
+package com.example.recipebook.utils.handlers;
 
 import android.content.Context;
 import android.content.SharedPreferences;

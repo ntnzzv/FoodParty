@@ -9,6 +9,7 @@ import com.example.recipebook.R;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
 public class BatteryInfoReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
 

@@ -30,7 +30,7 @@
             android:layout_margin="30dp"
             android:backgroundTint="#FFFFFF"
             android:clickable="true"
-            android:onClick="AddRecipe"
+            android:onClick="onAddRecipe"
             app:backgroundTint="#000000"
             app:maxImageSize="36dp"
             app:srcCompat="@drawable/outline_add_24" />

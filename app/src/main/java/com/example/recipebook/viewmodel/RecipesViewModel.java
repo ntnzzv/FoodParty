@@ -13,8 +13,8 @@ import androidx.preference.PreferenceManager;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.entities.User;
-import com.example.recipebook.utils.RealTimeDBService;
-import com.example.recipebook.utils.SharedPreferenceFileHandler;
+import com.example.recipebook.firebase.RealTimeDBService;
+import com.example.recipebook.utils.handlers.SharedPreferenceFileHandler;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,12 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.example.recipebook.utils.Constants.USERS_DB_NAME;
 
 public class RecipesViewModel extends AndroidViewModel {
     private MutableLiveData<List<User>> usersLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
-  //  private MutableLiveData<List<Recipe>> recipesLiveData;
+    //  private MutableLiveData<List<Recipe>> recipesLiveData;
     private MutableLiveData<Boolean> favoritesOnlyLiveData = new MutableLiveData<>();
 
     List<User> userList;
@@ -106,7 +105,7 @@ public class RecipesViewModel extends AndroidViewModel {
 
         //Firebase configurations
         realTimeDBService = RealTimeDBService.getInstance();
-        usersDBReference = realTimeDBService.getDBReference(USERS_DB_NAME);
+        usersDBReference = realTimeDBService.getReferenceToUsersDB();
         usersDBReference.addChildEventListener(new UserEventListener());
     }
 
@@ -114,10 +113,10 @@ public class RecipesViewModel extends AndroidViewModel {
     private void initializeVariables() {
         userList = new ArrayList<>();
         favoritesRecipesList = new ArrayList<>();
-        recipesList=new ArrayList<>();
+        recipesList = new ArrayList<>();
         usersLiveData = new MutableLiveData<>();
         favoritesRecipesLiveData = new MutableLiveData<>();
-   //     recipesLiveData = new MutableLiveData<>();
+        //     recipesLiveData = new MutableLiveData<>();
     }
 
     /*----------------------------------------------------------------*/
@@ -133,7 +132,8 @@ public class RecipesViewModel extends AndroidViewModel {
         }
         return favoritesRecipesLiveData;
     }
-//    public LiveData<List<Recipe>> getRecipes() {
+
+    //    public LiveData<List<Recipe>> getRecipes() {
 //        if (recipesLiveData.getValue() == null) {
 //            recipesLiveData.setValue(recipesList);
 //        }
@@ -214,6 +214,7 @@ public class RecipesViewModel extends AndroidViewModel {
             for (DataSnapshot recipeSnapshot : userSnapshot.getChildren()) {
                 Recipe recipe = recipeSnapshot.getValue(Recipe.class);
                 recipe.setId(recipeSnapshot.getKey());
+                recipe.setCreatorId(userSnapshot.getKey());
                 user.getRecipes().add(recipe);
             }
         }

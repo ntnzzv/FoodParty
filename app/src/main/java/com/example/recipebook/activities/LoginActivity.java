@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recipebook.R;
-import com.example.recipebook.utils.AuthGoogleService;
+import com.example.recipebook.firebase.AuthGoogleService;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
@@ -34,12 +34,14 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.without_signIn).setOnClickListener(v -> finish());
     }
 
-    public void signIn()
-    {
+
+    public void signIn() {
         Intent signInIntent = authGoogleService.getGoogleSignInClient(this).getSignInIntent();
-        startActivityForResult(signInIntent,RC_SIGN_IN);
+        //opening google sign in window
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    //After user sign in to google account
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -48,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             if (requestCode == RC_SIGN_IN) {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 try {
+                    //add the user to users in firebase authentication
                     GoogleSignInAccount account = task.getResult(ApiException.class);
                     firebaseAuthWithGoogle(account.getIdToken());
                 } catch (ApiException e) {
@@ -55,19 +58,22 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
-    public void firebaseAuthWithGoogle(String idToken){
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken,null);
+
+
+    public void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         authGoogleService.getFirebaseAuth().signInWithCredential(credential)
-                .addOnCompleteListener(this,task ->{
-                    if(task.isSuccessful()){
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
                         authGoogleService.setFirebaseCurrentUser();
-                        Intent intent=new Intent();
-                        intent.putExtra(USER_SIGNED,true);
+
+                        //return to main activity
+                        Intent intent = new Intent();
+                        intent.putExtra(USER_SIGNED, true);
                         setResult(RESULT_OK, intent);
                         finish();
-                    }
-                    else{
-                        Log.d("Auth",task.getException().toString());
+                    } else {
+                        Log.d("Auth", task.getException().toString());
                     }
                 });
 

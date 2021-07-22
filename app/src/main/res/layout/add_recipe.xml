@@ -30,7 +30,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:id="@+id/UploadedImage"
-                android:contentDescription="@string/uploadedimage" />
+                android:contentDescription="@string/uploaded_image" />
 
             <EditText
                 android:id="@+id/et_recipe_name"
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:text="@string/save"
-                    android:onClick="Save"
+                    android:onClick="onSave"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/outlinedTextField" />
@@ -189,7 +189,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:contentDescription="@string/add_image"
-        android:onClick="SelectImage"
+        android:onClick="onSelectImage"
         android:src="@drawable/image_placeholder"
         app:backgroundTint="@color/white"
         app:borderWidth="2dp"

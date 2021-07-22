@@ -16,24 +16,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.recipebook.utils.RealTimeDBService;
+import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
-import com.example.recipebook.utils.SharedPreferenceFileHandler;
+import com.example.recipebook.utils.handlers.SharedPreferenceFileHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import static com.example.recipebook.utils.Constants.DEFAULT_TAG;
-import static com.example.recipebook.utils.Constants.FAVORITE_TAG;
+
 import static com.example.recipebook.utils.Constants.INGREDIENTS_FIELD_NAME;
 import static com.example.recipebook.utils.Constants.INSTRUCTIONS_FIELD_NAME;
-import static com.example.recipebook.utils.Constants.USERS_DB_NAME;
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 
 public class RecipeDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static final String FAVORITE_TAG = "in_favorites";
+    public static final String DEFAULT_TAG = "not_in_favorites";
 
     private Recipe recipe;
     private TextView nameTv, descriptionTv;
@@ -52,10 +53,10 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     RealTimeDBService realTimeDBService;
     private DatabaseReference ingredientsFieldReference;
     private DatabaseReference instructionsFieldReference;
-    private DatabaseReference recipesDBReference;
+
 
     SharedPreferenceFileHandler favorites;
-    private String recipeId;
+    private String recipeId, creatorId;
 
 
     @Override
@@ -66,9 +67,10 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         //From Intent
         recipe = getRecipeObject();
         recipeId = recipe.getId();
+        creatorId = recipe.getCreatorId();
 
         //Views initialization
-        findViewsById();
+        findViewsByIds();
         setListeners();
 
         //Create favorite sp handler
@@ -78,15 +80,15 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
 
         //Firebase configurations...
         realTimeDBService = RealTimeDBService.getInstance();
-        ingredientsFieldReference = getReferenceToRecipeField(INGREDIENTS_FIELD_NAME);
-        instructionsFieldReference = getReferenceToRecipeField(INSTRUCTIONS_FIELD_NAME);
+        ingredientsFieldReference = realTimeDBService.getReferenceToRecipeField(creatorId, recipeId, INGREDIENTS_FIELD_NAME);
+        instructionsFieldReference = realTimeDBService.getReferenceToRecipeField(creatorId, recipeId, INSTRUCTIONS_FIELD_NAME);
 
         //UI updating
-        setUI();
+        InitializeActivity();
     }
 
     /*  ------------------------------------------------    */
-    private void findViewsById() {
+    private void findViewsByIds() {
         nameTv = findViewById(R.id.tv_name_details);
         descriptionTv = findViewById(R.id.tv_description_content_details);
         ingredientsLl = findViewById(R.id.list_view_ingredients_details);
@@ -111,21 +113,9 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         return (Recipe) intent.getSerializableExtra(RECIPE_DETAILS);
     }
 
-    /*  ------------------------------------------------    */
-    private DatabaseReference getReferenceToRecipeField(String fieldName) {
-        return realTimeDBService.getReferenceByPath(getRecipePath() + "/" + fieldName);
-    }
-
-    private DatabaseReference getReferenceToRecipe() {
-        return realTimeDBService.getReferenceByPath(getRecipePath());
-    }
-
-    private String getRecipePath() {
-        return USERS_DB_NAME + "/" + recipe.getId();
-    }
 
     /*  ------------------------------------------------    */
-    private void setUI() {
+    private void InitializeActivity() {
         nameTv.setText(recipe.getRecipeName());
         descriptionTv.setText(recipe.getDescription());
 
@@ -133,9 +123,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         setList(recipe.getIngredients(), ingredientsLl);
         setList(recipe.getInstructions(), instructionsLl);
 
-
-        String imgUrl=recipe.getImageUrl();
-        if(imgUrl.equals(""))
+        String imgUrl = recipe.getImageUrl();
+        if (imgUrl.equals(""))
             imageView.setBackgroundResource(R.drawable.no_image);
         else
             Picasso.get().load(recipe.getImageUrl()).into(imageView);
@@ -230,7 +219,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Delete from firebase, listener in view model will updated
-                getReferenceToRecipe().removeValue();
+                realTimeDBService.getReferenceToRecipe(creatorId, recipeId).removeValue();
                 finish();
             }
         });
