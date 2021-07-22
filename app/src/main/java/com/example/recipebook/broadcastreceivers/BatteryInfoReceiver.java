@@ -10,6 +10,9 @@ import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
 public class BatteryInfoReceiver extends BroadcastReceiver {
 
+    private boolean show = true;
+    private float criticalPercent = 30;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -22,7 +25,8 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
         int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         float batteryPercent = getBatteryPercent(level, scale);
 
-        if (batteryPercent <30 && !isCharging) {
+        if (show && batteryPercent < criticalPercent && !isCharging) {
+            setNewCriticalPercent();
             new FancyGifDialog.Builder(context)
                     .setTitle("Low battery")
                     .setMessage("Please charge your battery or save your recipe, it may be lost")
@@ -34,15 +38,24 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
                     .setNegativeBtnBackground(R.color.purple_200)
                     .setGifResource(R.drawable.low_battery_gif)
                     .isCancellable(true)
-                    .OnPositiveClicked(() ->{
+                    .OnPositiveClicked(() -> {
                     })
-                    .OnNegativeClicked(() -> {})
+                    .OnNegativeClicked(() -> {
+                    })
                     .build();
-
 
 
         }
 
+    }
+
+    private void setNewCriticalPercent() {
+        if (criticalPercent == 30)
+            criticalPercent = 15;
+        else {
+            criticalPercent = 30;
+            show = false;
+        }
     }
 
     private float getBatteryPercent(int level, float scale) {

@@ -190,9 +190,11 @@ public class AddRecipeActivity extends AppCompatActivity {
                     //add image to storage cloud and then update imageUrl in DB
                     ImageHandler.UploadImage(this, this, filePath, userUid, recipeName);
 
+
                 })
                 .OnNegativeClicked(() -> Toast.makeText(AddRecipeActivity.this, "Submission canceled", Toast.LENGTH_SHORT).show())
                 .build();
+
     }
 
     /*----------------------------------------------------------------*/

@@ -33,12 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
     private NetworkStateReceiver netStateReceiver;
     AuthGoogleService authGoogleService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        authGoogleService=AuthGoogleService.getInstance();
+        authGoogleService = AuthGoogleService.getInstance();
         checkIfUserSigned();
 
         //get view model
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         startForegroundService(intent);
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(netStateReceiver);
 
     }
+
     /*----------------------------------------------------------------*/
     private void setRecyclerViewAdapter() {
         RecyclerView rv = findViewById(R.id.rv_recipes_list);
@@ -98,17 +101,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.signin_item:
-                intent = new Intent(this, LoginActivity.class);
-                startActivityForResult(intent, SIGN_IN_CODE_ID);
+                openLoginActivity();
             case R.id.logout_item:
                 authGoogleService.signOut();
                 authGoogleService.getGoogleSignInClient(this).signOut();
                 intent = new Intent(this, LoginActivity.class);
-                userAlreadySignedFlag=false;
+                userAlreadySignedFlag = false;
                 startActivityForResult(intent, SIGN_IN_CODE_ID);
             default:
                 return false;
         }
+    }
+
+    private void openLoginActivity() {
+        Intent intent;
+        intent = new Intent(this, LoginActivity.class);
+        startActivityForResult(intent, SIGN_IN_CODE_ID);
     }
 
     @Override
@@ -130,19 +138,23 @@ public class MainActivity extends AppCompatActivity {
 
     //add button handler
     public void onAddRecipe(View view) {
-        Intent intent = new Intent(this, AddRecipeActivity.class);
-        startActivity(intent);
+        if (userAlreadySignedFlag) {
+            Intent intent = new Intent(this, AddRecipeActivity.class);
+            startActivity(intent);
+        } else
+            openLoginActivity();
+
 
     }
     /*----------------------------------------------------------------*/
 
     private void checkIfUserSigned() {
         if (authGoogleService.getFirebaseCurrentUser() != null) {
-            userAlreadySignedFlag=true;
+            userAlreadySignedFlag = true;
         } else {
-            userAlreadySignedFlag=false;
+            userAlreadySignedFlag = false;
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent,SIGN_IN_CODE_ID);
+            startActivityForResult(intent, SIGN_IN_CODE_ID);
         }
     }
 

@@ -3,6 +3,8 @@ package com.example.recipebook.firebase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.UUID;
+
 public class StorageService {
     private static StorageService storageServiceInstance = null;
 
@@ -28,7 +30,7 @@ public class StorageService {
     public static final String IMAGES_FOLDER_PATH = "images/";
 
     public StorageReference getReferenceToImagesFolder() {
-        return storageReference.child(IMAGES_FOLDER_PATH);
+        return storageReference.child(IMAGES_FOLDER_PATH+ UUID.randomUUID().toString());
     }
 
 }

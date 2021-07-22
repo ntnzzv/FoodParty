@@ -234,7 +234,8 @@
             app:backgroundTint="@color/black"
             app:elevation="0dp"
             app:maxImageSize="40dp"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
+            app:srcCompat="@drawable/ic_baseline_delete_24"
+            />
 
 
     </LinearLayout>

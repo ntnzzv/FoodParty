@@ -1,5 +1,6 @@
 package com.example.recipebook.utils.handlers;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -36,7 +37,8 @@ public final class ImageHandler {
             imagesRef.putFile(filePath)
                     .addOnSuccessListener(taskSnapshot -> {
                         // Image uploaded successfully to cloud! now we can get the imageUrl from cloud and update it in database
-                        handleOnSuccess(ToastClassContext, userUid, recipeName, progressDialog, imagesRef);
+                        handleOnSuccess(ToastClassContext, userUid, recipeName, progressDialog, imagesRef, context);
+
                     })
                     .addOnFailureListener(e -> {
                         // Error, Image not uploaded
@@ -60,7 +62,7 @@ public final class ImageHandler {
         Toast.makeText(ToastClassContext, "Failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
-    private static void handleOnSuccess(Context ToastClassContext, String userUid, String recipeName, ProgressDialog progressDialog, StorageReference imagesRef) {
+    private static void handleOnSuccess(Context ToastClassContext, String userUid, String recipeName, ProgressDialog progressDialog, StorageReference imagesRef, Object context) {
         imagesRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -68,9 +70,12 @@ public final class ImageHandler {
                 RealTimeDBService.getInstance()
                         .getReferenceToRecipeField(userUid, recipeName, IMAGE_URL_FIELD_NAME)
                         .setValue(uri.toString());
+                //back to main activity
+                ((Activity)context).finish();
             }
         });
         progressDialog.dismiss();
         Toast.makeText(ToastClassContext, "Image Uploaded!!!", Toast.LENGTH_SHORT).show();
+
     }
 }
