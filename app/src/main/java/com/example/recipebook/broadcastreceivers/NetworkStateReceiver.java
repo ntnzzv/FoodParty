@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class NetworkStateReceiver extends BroadcastReceiver {
-
+    static boolean off=false;
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
@@ -19,11 +19,14 @@ public class NetworkStateReceiver extends BroadcastReceiver {
 
         State state = info.getState();
 
-        if (state != State.CONNECTED)
+        if (state != State.CONNECTED) {
             Toast.makeText(context, "Network OFF", Toast.LENGTH_LONG).show();
-        if(state == State.CONNECTED)
+            off=true;
+        }
+        if(off && state == State.CONNECTED) {
             Toast.makeText(context, "Network is back ON", Toast.LENGTH_LONG).show();
-
+            off=false;
+        }
     }
 }
 

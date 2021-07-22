@@ -47,15 +47,20 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
 
         }
 
+        if (batteryPercent > 15)
+            show=true;
+        if (batteryPercent > 30) {
+            criticalPercent = 30;
+        }
+
     }
 
     private void setNewCriticalPercent() {
         if (criticalPercent == 30)
             criticalPercent = 15;
-        else {
-            criticalPercent = 30;
+        else //=15
             show = false;
-        }
+
     }
 
     private float getBatteryPercent(int level, float scale) {

@@ -36,5 +36,6 @@
     <string name="submit">Submit</string>
     <string name="recipe_submitted">Recipe submitted!</string>
     <string name="select_image">Select Image from here...</string>
+    <string name="added">added</string>
 
 </resources>

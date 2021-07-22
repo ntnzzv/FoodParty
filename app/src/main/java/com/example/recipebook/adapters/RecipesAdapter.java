@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipebook.entities.User;
+import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
@@ -71,6 +72,22 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             }
         });
         /*----------------------------------------------------------------*/
+//        viewModel.getShowOnlyMineFlag().observe((LifecycleOwner) context, showOnlyMineFlag -> {
+//            if (showOnlyMineFlag){
+//                presentedRecipes.removeIf(recipe ->
+//                        !recipe.getCreatorId().
+//                                equals(AuthGoogleService.getInstance().getFirebaseCurrentUser()));
+//            }
+//            else {
+//                if(viewModel.getFavoritesOnlyFlag().getValue())
+//                    updatePresentedRecipes2(viewModel.getFavoritesRecipes().getValue());
+//
+//                else
+//                    updatePresentedRecipes(viewModel.getUsers().getValue());
+//
+//            }
+//
+//        });
 
     }
 
