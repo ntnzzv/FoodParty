@@ -17,17 +17,20 @@ import com.example.recipebook.services.MyForegroundService;
 import com.example.recipebook.firebase.AuthGoogleService;
 
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
+import com.example.recipebook.utils.Constants;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
 
+import static com.example.recipebook.utils.Constants.RECIPE_NAME;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
+import static com.example.recipebook.utils.Constants.USER_UID;
 
 
 public class MainActivity extends AppCompatActivity {
     public static final int SIGN_IN_CODE_ID = 222;
     RecipesAdapter adapter;
-    RecipesViewModel viewModel;
+    public static RecipesViewModel viewModel;
 
     private boolean userAlreadySignedFlag;
 
@@ -51,8 +54,13 @@ public class MainActivity extends AppCompatActivity {
         //Broadcast receiver for network state
         netStateReceiver = new NetworkStateReceiver();
 
+        Intent intent = new Intent(this, MyForegroundService.class);
 
+        intent.putExtra(Constants.FILE_PATH, (Bundle) null);
+        intent.putExtra(RECIPE_NAME,"null");
+        intent.putExtra(USER_UID,"userUid");
 
+        startForegroundService(intent);
     }
 
     @Override

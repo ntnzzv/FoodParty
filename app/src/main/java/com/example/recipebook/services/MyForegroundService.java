@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.recipebook.R;
@@ -18,7 +19,12 @@ import com.example.recipebook.activities.MainActivity;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.firebase.StorageService;
 import com.example.recipebook.utils.Constants;
+import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 
 import static com.example.recipebook.utils.Constants.FILE_PATH;
@@ -33,6 +39,7 @@ public class MyForegroundService extends Service {
     static NotificationManager notificationManager = null;
 
     Notification.Builder builder;
+    private PushWorker push;
 
     @Nullable
     @Override
@@ -49,11 +56,12 @@ public class MyForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+
         Bundle bundle = intent.getExtras();
         Uri filePath = bundle.getParcelable(FILE_PATH);
         String recipeName = bundle.getString(RECIPE_NAME);
         String userUid = bundle.getString(USER_UID);
-
 
         if (filePath != null) {
             // Defining the child of storageReference
@@ -78,12 +86,12 @@ public class MyForegroundService extends Service {
                                 });
                     });
         }
-        updateNotification(Integer.toString(0));
         return super.onStartCommand(intent, flags, startId);
     }
 
 
     private void initForeground() {
+
 
         if (notificationManager == null)
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -91,7 +99,6 @@ public class MyForegroundService extends Service {
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
         //create an explicit intent for an activity
-
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP / Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -103,6 +110,13 @@ public class MyForegroundService extends Service {
                 .setContentIntent(pendingIntent);
 
         startForeground(NOTIFICATION_ID, updateNotification(Integer.toString(0)));
+
+
+        if(this.push == null){
+            this.push = new PushWorker(intent);
+            push.start();
+
+        }
     }
 
     private Notification updateNotification(String details) {
@@ -114,4 +128,24 @@ public class MyForegroundService extends Service {
     }
 
 
+    private class PushWorker extends Thread
+    {
+        Intent intent;
+        public PushWorker(Intent intent){
+            this.intent = intent;
+        }
+        @Override
+        public void run(){
+
+            while(true){
+                try {
+                    updateNotification(Integer.toString(1));
+                    sendBroadcast(intent);
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
