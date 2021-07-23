@@ -26,6 +26,7 @@ import java.util.Set;
 
 
 public class RecipesViewModel extends AndroidViewModel {
+
     private MutableLiveData<List<User>> usersLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
     private MutableLiveData<List<Recipe>> allRecipesLiveData;
@@ -35,9 +36,10 @@ public class RecipesViewModel extends AndroidViewModel {
     List<User> usersList;
     List<Recipe> favoritesRecipesList;
     List<Recipe> allRecipesList;
+
     boolean favoritesOnlyFlag;
     boolean showOnlyMyRecipesFlag;
-
+    public static String searchQuery;
     RealTimeDBService realTimeDBService;
     DatabaseReference usersDBReference;
 
@@ -102,7 +104,6 @@ public class RecipesViewModel extends AndroidViewModel {
                 //Get set with favorite recipes's ids
                 Set<String> spFavorites = favorites.read();
 
-
                 //For each user in local list we check his recipes
                 allRecipesList.forEach(recipe ->
                 {
@@ -115,8 +116,6 @@ public class RecipesViewModel extends AndroidViewModel {
                     if (userAddsRecipeToFavorites(spFavorites, recipe))
                         favoritesRecipesList.add(recipe);
                 });
-
-
                 //Set LiveData too, in order to wake up the observer in RecipeAdapter
                 favoritesRecipesLiveData.setValue(favoritesRecipesList);
             }
@@ -140,6 +139,7 @@ public class RecipesViewModel extends AndroidViewModel {
         usersDBReference = realTimeDBService.getReferenceToUsersDB();
         usersDBReference.addChildEventListener(new UserEventListener());
     }
+
 
     /*----------------------------------------------------------------*/
     private void initializeVariables() {
@@ -191,9 +191,11 @@ public class RecipesViewModel extends AndroidViewModel {
         @Override
         public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
             User user = getUserFromSnapshot(userSnapshot);
+
             updateUserRecipesList(userSnapshot, user);
             usersList.add(user);
             usersLiveData.setValue(usersList);
+
 
             allRecipesList.addAll(user.getRecipes());
 

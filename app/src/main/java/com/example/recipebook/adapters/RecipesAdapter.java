@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 
@@ -79,8 +80,34 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
         });
 
+
     }
 
+    public void filter(String query) {
+
+
+        presentedRecipes.clear();
+        List<Recipe> recipes;
+
+        if(viewModel.getFavoritesOnlyFlag().getValue()){
+            recipes = viewModel.getFavoritesRecipes().getValue();
+        }
+        else{
+            recipes = viewModel.getAllRecipes().getValue();
+        }
+
+        if(query.isEmpty() || query == null){
+            presentedRecipes.addAll(recipes);
+        } else{
+            query = query.toLowerCase();
+            for(Recipe item: recipes){
+                if(item.getDescription().toLowerCase().contains(query) || item.getRecipeName().toLowerCase().contains(query)){
+                    presentedRecipes.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
     //Populate list for recycler view with updated list
 
 
@@ -148,10 +175,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             shortDescriptionTv.setText(recipe.getDescription());
 
             String imgUrl = recipe.getImageUrl();
-            if (imgUrl.equals(""))
+            if (imgUrl.equals("")) {
+                imageView.setImageDrawable(null);
                 imageView.setBackgroundResource(R.drawable.no_image);
-            else
+            }
+            else {
                 Picasso.get().load(recipe.getImageUrl()).into(imageView);
+            }
 
         }
     }
