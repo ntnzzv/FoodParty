@@ -38,12 +38,13 @@
 
                 <EditText
                     android:id="@+id/text"
-                    android:layout_width="300dp"
+                    android:layout_width="280dp"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLines ="2"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:autofillHints=""
                     android:ems="10"
-                    android:inputType="textPersonName"
                     android:text="Name" />
 
                 <ImageView

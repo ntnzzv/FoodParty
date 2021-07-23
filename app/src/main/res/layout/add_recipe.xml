@@ -91,7 +91,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="366dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -99,6 +99,7 @@
                     android:id="@+id/InstructionsRecyclerView"
                     android:layout_width="wrap_content"
                     android:layout_height="110dp"
+
                     android:layout_marginLeft="20dp" />
 
             </LinearLayout>
@@ -132,19 +133,20 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/IngredientsRecyclerView"
-                android:layout_width="wrap_content"
-                android:layout_height="110dp"
-                android:layout_marginStart="20dp" />
+            <LinearLayout
+                android:layout_width="366dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/IngredientsRecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="110dp"
+                    android:layout_marginStart="20dp" />
+
+            </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
