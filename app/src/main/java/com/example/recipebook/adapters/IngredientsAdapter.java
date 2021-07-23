@@ -35,6 +35,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull IngredientsAdapter.IngredientsViewHolder holder, int position) {
+        ((EditText)holder.itemView.findViewById(R.id.text)).setText(ingredients.get(position));
 
     }
 

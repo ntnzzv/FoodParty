@@ -40,6 +40,7 @@
 
         <TextView
             android:id="@+id/tv_description_item"
+            style="@style/DetailsContentStyleLessSignificant"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -50,8 +51,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_image_item"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_name_item"
-            tools:text="@string/description"
-            style="@style/DetailsContentStyleLessSignificant"/>
+            tools:text="@string/description" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

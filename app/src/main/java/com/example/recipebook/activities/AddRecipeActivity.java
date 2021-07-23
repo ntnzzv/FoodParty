@@ -1,5 +1,7 @@
 package com.example.recipebook.activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -68,10 +71,15 @@ public class AddRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_recipe);
         netStateReceiver = new NetworkStateReceiver();
-
+        if(savedInstanceState != null){
+            instructions = (ArrayList<String>) savedInstanceState.get("instructions");
+            ingredients = (ArrayList<String>)savedInstanceState.get("ingredients");
+        }
         InitializeActivity();
 
         batteryInfoReceiver = new BatteryInfoReceiver();
+
+
     }
 
 
@@ -141,6 +149,14 @@ public class AddRecipeActivity extends AppCompatActivity {
             Objects.requireNonNull(ingredientsRecycler.getLayoutManager()).scrollToPosition(0);
             ingredientsAdapter.notifyItemInserted(0);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("ingredients",ingredients);
+        outState.putStringArrayList("instructions",instructions);
+
     }
 
     private void populateDropdown() {
