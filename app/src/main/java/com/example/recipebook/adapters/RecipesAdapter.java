@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipebook.entities.User;
 import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
@@ -48,14 +47,14 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             if (favoritesOnlyFlag) {
                 //Stop observing for changes on all recipes
                 // Else it make a duplicates, so we want one active observer
-                viewModel.getUsers().removeObservers((LifecycleOwner) context);
+                viewModel.getAllRecipes().removeObservers((LifecycleOwner) context);
 
                 //Get updated list of favorites recipes - for recyclerview updates
-                updatePresentedRecipes2(viewModel.getFavoritesRecipes().getValue());
+                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
 
                 //Observer for changes only on favorites recipes  - for recyclerview updates
                 viewModel.getFavoritesRecipes().observe((LifecycleOwner) context, favoritesRecipes ->
-                        updatePresentedRecipes2(favoritesRecipes));
+                        updatePresentedRecipes(favoritesRecipes));
 
 
             } else {
@@ -64,45 +63,44 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
 
                 //Get updated list of all recipes - for recyclerview updates
-                updatePresentedRecipes(viewModel.getUsers().getValue());
+                updatePresentedRecipes(viewModel.getAllRecipes().getValue());
 
                 //Observer for changes on all recipes  - for recyclerview updates
-                viewModel.getUsers().observe((LifecycleOwner) context, users ->
-                        updatePresentedRecipes(users));
+                viewModel.getAllRecipes().observe((LifecycleOwner) context, recipes ->
+                        updatePresentedRecipes(recipes));
             }
         });
         /*----------------------------------------------------------------*/
-//        viewModel.getShowOnlyMineFlag().observe((LifecycleOwner) context, showOnlyMineFlag -> {
-//            if (showOnlyMineFlag) {
-//                presentedRecipes.removeIf(recipe ->
-//                        !recipe.getCreatorId().
-//                                equals(AuthGoogleService.getInstance().getFirebaseCurrentUser()));
-//            } else {
-//                if (viewModel.getFavoritesOnlyFlag().getValue())
-//                    updatePresentedRecipes2(viewModel.getFavoritesRecipes().getValue());
-//                else
-//                    updatePresentedRecipes(viewModel.getUsers().getValue());
-//
-//            }
-//
-//        });
+        viewModel.getShowOnlyMyRecipesFlag().observe((LifecycleOwner) context, showOnlyMyRecipesFlag -> {
+                if (viewModel.getFavoritesOnlyFlag().getValue())
+                    updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
+                else
+                    updatePresentedRecipes(viewModel.getAllRecipes().getValue());
+
+        });
 
     }
 
     //Populate list for recycler view with updated list
-    private void updatePresentedRecipes(List<User> userList) {
+
+
+    private void updatePresentedRecipes(List<Recipe> recipes) {
         presentedRecipes.clear();
-        for (User user : userList)
-            presentedRecipes.addAll(user.getRecipes());
+        if (viewModel.getShowOnlyMyRecipesFlag().getValue()) {
+            recipes.forEach(recipe ->
+            {
+                if (thisUserCreateThisRecipe(recipe))
+                    presentedRecipes.add(recipe);
+            });
+        } else
+            presentedRecipes.addAll(recipes);
         notifyDataSetChanged();
 
     }
 
-    private void updatePresentedRecipes2(List<Recipe> recipes) {
-        presentedRecipes.clear();
-        presentedRecipes.addAll(recipes);
-        notifyDataSetChanged();
-
+    private boolean thisUserCreateThisRecipe(Recipe recipe) {
+        return recipe.getCreatorId().
+                equals(AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid());
     }
 
     @NonNull

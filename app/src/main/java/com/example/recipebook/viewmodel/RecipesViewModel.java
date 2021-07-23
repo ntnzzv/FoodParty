@@ -28,15 +28,15 @@ import java.util.Set;
 public class RecipesViewModel extends AndroidViewModel {
     private MutableLiveData<List<User>> usersLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
-    //  private MutableLiveData<List<Recipe>> recipesLiveData;
+    private MutableLiveData<List<Recipe>> allRecipesLiveData;
     private MutableLiveData<Boolean> favoritesOnlyLiveData = new MutableLiveData<>();
-    //private MutableLiveData<Boolean> showOnlyMineLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> showOnlyMyRecipesLiveData = new MutableLiveData<>();
 
-    List<User> userList;
+    List<User> usersList;
     List<Recipe> favoritesRecipesList;
-    List<Recipe> recipesList;
+    List<Recipe> allRecipesList;
     boolean favoritesOnlyFlag;
-  //  boolean showOnlyMineFlag;
+    boolean showOnlyMyRecipesFlag;
 
     RealTimeDBService realTimeDBService;
     DatabaseReference usersDBReference;
@@ -60,7 +60,7 @@ public class RecipesViewModel extends AndroidViewModel {
 
         //update flag to current preference value
         favoritesOnlyFlag = defaultSp.getBoolean(application.getString(R.string.favorites), false);
-        //showOnlyMineFlag = defaultSp.getBoolean(application.getString(R.string.added), false);
+        showOnlyMyRecipesFlag = defaultSp.getBoolean(application.getString(R.string.added), false);
         initializeVariables();
 
 
@@ -68,15 +68,21 @@ public class RecipesViewModel extends AndroidViewModel {
         defaultSpListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
                 if (key.equals(application.getString(R.string.favorites))) {
+
                     //update flag to new preference value
                     favoritesOnlyFlag = prefs.getBoolean(application.getString(R.string.favorites), false);
+
                     //Set LiveData too, in order to wake up the observer in RecipeAdapter
                     favoritesOnlyLiveData.setValue(favoritesOnlyFlag);
                 }
-//                if (key.equals(application.getString(R.string.added))) {
-//                    showOnlyMineFlag= prefs.getBoolean(application.getString(R.string.added), false);
-//                    showOnlyMineLiveData.setValue(showOnlyMineFlag);
-//                }
+                if (key.equals(application.getString(R.string.added))) {
+
+                    //update flag to new preference value
+                    showOnlyMyRecipesFlag = prefs.getBoolean(application.getString(R.string.added), false);
+
+                    //Set LiveData too, in order to wake up the observer in RecipeAdapter
+                    showOnlyMyRecipesLiveData.setValue(showOnlyMyRecipesFlag);
+                }
             }
         };
         defaultSp.registerOnSharedPreferenceChangeListener(defaultSpListener);
@@ -96,16 +102,33 @@ public class RecipesViewModel extends AndroidViewModel {
                 //Get set with favorite recipes's ids
                 Set<String> spFavorites = favorites.read();
 
-                //Put all recipes in sp file to favorites list
-                favoritesRecipesList.clear();
-                for (User user : userList) {
-                    user.getRecipes().forEach(recipe -> {
-                        if (spFavorites.contains(recipe.getId()))
-                            favoritesRecipesList.add(recipe);
-                    });
-                }
+
+                //For each user in local list we check his recipes
+                allRecipesList.forEach(recipe ->
+                {
+                    //For each recipe we check if id exists in sp file or no,
+                    // and update our favorites list if needed
+
+                    if (userDropsRecipeFromFavorites(spFavorites, recipe))
+                        favoritesRecipesList.remove(recipe);
+
+                    if (userAddsRecipeToFavorites(spFavorites, recipe))
+                        favoritesRecipesList.add(recipe);
+                });
+
+
                 //Set LiveData too, in order to wake up the observer in RecipeAdapter
                 favoritesRecipesLiveData.setValue(favoritesRecipesList);
+            }
+
+            private boolean userAddsRecipeToFavorites(Set<String> spFavorites, Recipe recipe) {
+                return !favoritesRecipesList.contains(recipe) //not in our local list
+                        && spFavorites.contains(recipe.getId());//but exists in sp file as fvorite
+            }
+
+            private boolean userDropsRecipeFromFavorites(Set<String> spFavorites, Recipe recipe) {
+                return favoritesRecipesList.contains(recipe) //exist in our local list
+                        && !spFavorites.contains(recipe.getId()); //but not in sp anymore
             }
         };
         favorites.getShredPref().registerOnSharedPreferenceChangeListener(spListener);
@@ -120,18 +143,18 @@ public class RecipesViewModel extends AndroidViewModel {
 
     /*----------------------------------------------------------------*/
     private void initializeVariables() {
-        userList = new ArrayList<>();
+        usersList = new ArrayList<>();
         favoritesRecipesList = new ArrayList<>();
-        recipesList = new ArrayList<>();
+        allRecipesList = new ArrayList<>();
         usersLiveData = new MutableLiveData<>();
         favoritesRecipesLiveData = new MutableLiveData<>();
-        //     recipesLiveData = new MutableLiveData<>();
+        allRecipesLiveData = new MutableLiveData<>();
     }
 
     /*----------------------------------------------------------------*/
     public LiveData<List<User>> getUsers() {
         if (usersLiveData.getValue() == null)
-            usersLiveData.setValue(userList);
+            usersLiveData.setValue(usersList);
         return usersLiveData;
     }
 
@@ -142,79 +165,102 @@ public class RecipesViewModel extends AndroidViewModel {
         return favoritesRecipesLiveData;
     }
 
-    //    public LiveData<List<Recipe>> getRecipes() {
-//        if (recipesLiveData.getValue() == null) {
-//            recipesLiveData.setValue(recipesList);
-//        }
-//        return recipesLiveData;
-//    }
+    public LiveData<List<Recipe>> getAllRecipes() {
+        if (allRecipesLiveData.getValue() == null) {
+            allRecipesLiveData.setValue(allRecipesList);
+        }
+        return allRecipesLiveData;
+    }
+
     public LiveData<Boolean> getFavoritesOnlyFlag() {
         if (favoritesOnlyLiveData.getValue() == null) {
             favoritesOnlyLiveData.setValue(favoritesOnlyFlag);
         }
         return favoritesOnlyLiveData;
     }
-//    public LiveData<Boolean> getShowOnlyMineFlag() {
-//        if (showOnlyMineLiveData.getValue() == null) {
-//            showOnlyMineLiveData.setValue(showOnlyMineFlag);
-//        }
-//        return showOnlyMineLiveData;
-//    }
+
+    public LiveData<Boolean> getShowOnlyMyRecipesFlag() {
+        if (showOnlyMyRecipesLiveData.getValue() == null) {
+            showOnlyMyRecipesLiveData.setValue(showOnlyMyRecipesFlag);
+        }
+        return showOnlyMyRecipesLiveData;
+    }
+
     /*----------------------------------------------------------------*/
     private class UserEventListener implements ChildEventListener {
         @Override
         public void onChildAdded(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
             User user = getUserFromSnapshot(userSnapshot);
             updateUserRecipesList(userSnapshot, user);
-            userList.add(user);
-            usersLiveData.setValue(userList);
+            usersList.add(user);
+            usersLiveData.setValue(usersList);
 
-            for (Recipe recipe : user.getRecipes())
-                if (favorites.contains(recipe.getId()))
-                    favoritesRecipesList.add(recipe);
+            allRecipesList.addAll(user.getRecipes());
+
+            user.getRecipes().forEach(recipe ->
+                    {
+                        if (favorites.contains(recipe.getId()))
+                            favoritesRecipesList.add(recipe);
+                    }
+
+            );
+
             favoritesRecipesLiveData.setValue(favoritesRecipesList);
+            allRecipesLiveData.setValue(allRecipesList);
+
         }
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot userSnapshot, @Nullable String s) {
             User user = getUserFromSnapshot(userSnapshot);
-            userList.remove(user);
+            usersList.remove(user);
             updateUserRecipesList(userSnapshot, user);
-            userList.add(user);
-            usersLiveData.setValue(userList);
+            usersList.add(user);
+            usersLiveData.setValue(usersList);
 
+            allRecipesList.removeIf(recipe -> recipe.getCreatorId().equals(user.getId()));
+            allRecipesList.addAll(user.getRecipes());
+
+            favoritesRecipesList.removeIf(recipe -> recipe.getCreatorId().equals(user.getId()));
+            user.getRecipes().forEach(recipe ->
+                    {
+                        if (favorites.contains(recipe.getId()))
+                            favoritesRecipesList.add(recipe);
+                    }
+
+            );
+
+       /*
             //for case of owner change recipe
             for (Recipe recipe : user.getRecipes())
                 if (favorites.contains(recipe.getId())) {
                     favoritesRecipesList.remove(recipe);
                     favoritesRecipesList.add(recipe);
                 }
+
             //for case of owner delete recipe
             List<Recipe> favoritesRecipesListNew = favoritesRecipesList;
-
             favoritesRecipesList.removeIf(recipe -> ownerDeleteRecipe(user, recipe));
-
+*/
+            //update LiveData
             favoritesRecipesLiveData.setValue(favoritesRecipesList);
+            allRecipesLiveData.setValue(allRecipesList);
 
-
-        }
-
-        private boolean ownerDeleteRecipe(User user, Recipe recipe) {
-            return recipe.getCreatorId().equals(user.getId()) //this is the owner of recipe ?
-                    && !user.getRecipes().contains(recipe);//owner delete this recipe ?
         }
 
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
             User user = getUserFromSnapshot(dataSnapshot);
-            userList.remove(user);
-            usersLiveData.setValue(userList);
+            usersList.remove(user);
+            usersLiveData.setValue(usersList);
 
-            for (Recipe recipe : user.getRecipes())
-                if (favorites.contains(recipe.getId()))
-                    favoritesRecipesList.remove(recipe);
+            allRecipesList.removeIf(recipe -> recipe.getCreatorId().equals(user.getId()));
+            favoritesRecipesList.removeIf(recipe -> recipe.getCreatorId().equals(user.getId()));
+
+
             favoritesRecipesLiveData.setValue(favoritesRecipesList);
+            allRecipesLiveData.setValue(allRecipesList);
 
 
         }
@@ -240,6 +286,8 @@ public class RecipesViewModel extends AndroidViewModel {
                 recipe.setCreatorId(userSnapshot.getKey());
                 user.getRecipes().add(recipe);
             }
+
+
         }
     }
 }

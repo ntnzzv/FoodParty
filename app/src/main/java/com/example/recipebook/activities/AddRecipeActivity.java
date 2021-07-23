@@ -60,6 +60,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     private Uri filePath;
 
     private BatteryInfoReceiver batteryInfoReceiver;
+    private boolean userSelectImage =false;//לא לשכוח לטפל במגרה של היפוך מסך (לשמור ערכים )
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,6 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         batteryInfoReceiver = new BatteryInfoReceiver();
     }
-
 
 
     @Override
@@ -177,6 +177,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     // Select image btn pressed
     public void onSelectImage(View view) {
         // Defining Implicit Intent to mobile gallery
+        userSelectImage =true;
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -187,9 +188,9 @@ public class AddRecipeActivity extends AppCompatActivity {
     public void onSave(View view) {
 
         TextInputLayout description = findViewById(R.id.outlinedTextField);
-        String descriptionText = ((TextInputEditText)findViewById(R.id.description)).getEditableText().toString();
+        String descriptionText = ((TextInputEditText) findViewById(R.id.description)).getEditableText().toString();
         TextInputLayout type = findViewById(R.id.spinner_mealType);
-        String typeText = ((AutoCompleteTextView)findViewById(R.id.dropdown)).getEditableText().toString();
+        String typeText = ((AutoCompleteTextView) findViewById(R.id.dropdown)).getEditableText().toString();
         EditText recipeName = findViewById(R.id.et_recipe_name);
         String recipeNameText = recipeName.getEditableText().toString();
         String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
@@ -202,13 +203,13 @@ public class AddRecipeActivity extends AppCompatActivity {
         instructionsLayout.setErrorEnabled(false);
         ingredientsLayout.setErrorEnabled(false);
 
-        if(descriptionText.isEmpty() || typeText.isEmpty() || recipeNameText.isEmpty() || ingredients.isEmpty() || instructions.isEmpty()){
+        if (descriptionText.isEmpty() || typeText.isEmpty() || recipeNameText.isEmpty() || ingredients.isEmpty() || instructions.isEmpty()) {
 
-           if(descriptionText.isEmpty()) description.setError("Please enter description");
-           if(typeText.isEmpty()) type.setError("Please choose a type");
-           if(recipeNameText.isEmpty())recipeName.setError("Please enter a recipe name");
-           if(instructions.isEmpty())instructionsLayout.setError("Please add instructions");
-           if(ingredients.isEmpty())ingredientsLayout.setError("Please add ingredients");
+            if (descriptionText.isEmpty()) description.setError("Please enter description");
+            if (typeText.isEmpty()) type.setError("Please choose a type");
+            if (recipeNameText.isEmpty()) recipeName.setError("Please enter a recipe name");
+            if (instructions.isEmpty()) instructionsLayout.setError("Please add instructions");
+            if (ingredients.isEmpty()) ingredientsLayout.setError("Please add ingredients");
             Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_LONG).show();
             return;
         }
@@ -236,16 +237,19 @@ public class AddRecipeActivity extends AppCompatActivity {
                     RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipeNameText).setValue(recipe);
 
                     //foreground service
-                    Intent intent = new Intent(this, MyForegroundService.class);
+                    if(userSelectImage)
+                    {
+                        Intent intent = new Intent(this, MyForegroundService.class);
 
-                    intent.putExtra(Constants.FILE_PATH,filePath);
-                    intent.putExtra(RECIPE_NAME,recipeNameText);
-                    intent.putExtra(USER_UID,userUid);
+                        intent.putExtra(Constants.FILE_PATH, filePath);
+                        intent.putExtra(RECIPE_NAME, recipeNameText);
+                        intent.putExtra(USER_UID, userUid);
 
-                    startForegroundService(intent);
+                        startForegroundService(intent);
+                    }
 
                     //add image to storage cloud and then update imageUrl in DB
-                  //  ImageHandler.UploadImage( filePath, userUid, recipeNameText);
+                    //  ImageHandler.UploadImage( filePath, userUid, recipeNameText);
 
                     //back to main activity
                     finish();
@@ -273,15 +277,18 @@ public class AddRecipeActivity extends AppCompatActivity {
                 && data.getData() != null) {
             // Get the Uri of data
             filePath = data.getData();
+            try {
+                // Setting image on image view using Bitmap
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                image.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                // Log the exception
+                e.printStackTrace();
+            }
         }
-        try {
-            // Setting image on image view using Bitmap
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-            image.setImageBitmap(bitmap);
-        } catch (IOException e) {
-            // Log the exception
-            e.printStackTrace();
-        }
+        else
+            userSelectImage =false;
+
     }
 
 }
