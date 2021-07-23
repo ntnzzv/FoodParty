@@ -11,25 +11,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.recipebook.R;
 import com.example.recipebook.activities.MainActivity;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.firebase.StorageService;
-import com.example.recipebook.utils.Constants;
-import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 
 import static com.example.recipebook.utils.Constants.FILE_PATH;
 import static com.example.recipebook.utils.Constants.IMAGE_URL_FIELD_NAME;
-import static com.example.recipebook.utils.Constants.RECIPE_NAME;
+import static com.example.recipebook.utils.Constants.RECIPE_ID;
 import static com.example.recipebook.utils.Constants.USER_UID;
 
 public class MyForegroundService extends Service {
@@ -60,7 +53,7 @@ public class MyForegroundService extends Service {
 
         Bundle bundle = intent.getExtras();
         Uri filePath = bundle.getParcelable(FILE_PATH);
-        String recipeName = bundle.getString(RECIPE_NAME);
+        String recipeId = bundle.getString(RECIPE_ID);
         String userUid = bundle.getString(USER_UID);
 
         if (filePath != null) {
@@ -75,7 +68,7 @@ public class MyForegroundService extends Service {
                                     public void onSuccess(Uri uri) {
                                         //Get reference to imageUrl field in DB and set the path to image in stodge cloud (uri)
                                         RealTimeDBService.getInstance()
-                                                .getReferenceToRecipeField(userUid, recipeName, IMAGE_URL_FIELD_NAME)
+                                                .getReferenceToRecipeField(userUid, recipeId, IMAGE_URL_FIELD_NAME)
                                                 .setValue(uri.toString());
                                         updateNotification(Integer.toString(1));
                                     }

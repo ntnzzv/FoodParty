@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -13,15 +13,13 @@
         android:roundIcon="@drawable/app_icon2"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeBook">
-
-        <activity android:name=".activities.AddRecipeActivity"
-                  android:label="@string/app_name"
-                  android:windowSoftInputMode="adjustResize">
-        </activity>
-
+        <activity android:name=".activities.EditRecipeActivity"></activity>
+        <activity
+            android:name=".activities.AddRecipeActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.LoginActivity" />
-
         <activity
             android:name=".activities.RecipeDetailsActivity"
             android:parentActivityName=".activities.MainActivity"
@@ -34,18 +32,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-
         <service android:name=".services.MyForegroundService" />
-
-
+        <service android:name=".services.UploadImageToCloudService" />
     </application>
 
 </manifest>

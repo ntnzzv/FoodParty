@@ -5,22 +5,29 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Recipe implements Serializable {
-    private String id="";
-    private String creatorId="";
+    private String id;
+    private String creatorId;
 
     private String recipeName="";
     private String description="";
     private String imageUrl="";
     private ArrayList<String> ingredients = new ArrayList<>();
     private ArrayList<String> instructions = new ArrayList<>();
-    private String type="";
+    private MealType type= MealType.Undefined;
 
+    public enum MealType {
+        Breakfast,
+        Brunch,
+        Dinner,
+        Dessert,
+        Undefined
+    }
     public Recipe(String recipeName, String description, ArrayList<String> ingredients, ArrayList<String> instructions, String type) {
         this.recipeName = recipeName;
         this.description = description;
         this.ingredients = ingredients;
         this.instructions = instructions;
-        this.type = type;
+        this.type = MealType.valueOf(type);
     }
 
     public Recipe() {
@@ -48,12 +55,11 @@ public class Recipe implements Serializable {
         this.ingredients = ingredients;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public void setInstructions(ArrayList<String> instructions) {
         this.instructions = instructions;
+    }
+    public void setType(MealType type) {
+        this.type = type;
     }
 
     public void setCreatorId(String creatorId) {
@@ -81,12 +87,12 @@ public class Recipe implements Serializable {
         return ingredients;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public ArrayList<String> getInstructions() {
         return instructions;
+    }
+
+    public MealType getType() {
+        return type;
     }
 
     public String getCreatorId() {

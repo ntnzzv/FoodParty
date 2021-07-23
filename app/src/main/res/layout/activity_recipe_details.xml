@@ -213,13 +213,6 @@
         app:layout_anchor="@id/nested_scroll_view"
         app:layout_anchorGravity="end|bottom">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/favorite_button_details"
-            style="@style/FloatingActionButtonStyle"
-            app:backgroundTint="@color/black"
-            app:elevation="0dp"
-            app:maxImageSize="40dp"
-            app:srcCompat="@drawable/ic_baseline_favorite_border_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/edit_button_details"
@@ -236,6 +229,13 @@
             app:maxImageSize="40dp"
             app:srcCompat="@drawable/ic_baseline_delete_24"
             />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/favorite_button_details"
+            style="@style/FloatingActionButtonStyle"
+            app:backgroundTint="@color/black"
+            app:elevation="0dp"
+            app:maxImageSize="40dp"
+            app:srcCompat="@drawable/ic_baseline_favorite_border_24" />
 
 
     </LinearLayout>

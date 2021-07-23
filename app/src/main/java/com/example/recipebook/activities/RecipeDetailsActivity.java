@@ -18,11 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
-import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.utils.Methods;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
+import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
@@ -38,6 +39,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
 
     public static final String FAVORITE_TAG = "in_favorites";
     public static final String DEFAULT_TAG = "not_in_favorites";
+    private static final int EDIT_CODE_ID = 111;
 
     private Recipe recipe;
     private TextView nameTv, descriptionTv;
@@ -61,7 +63,6 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     SharedPreferenceFileHandler favorites;
     private String recipeId, creatorId;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,14 +70,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         netStateReceiver = new NetworkStateReceiver();
 
         //From Intent
-        recipe = getRecipeObject();
+        recipe = Methods.getRecipeObject(getIntent());
         recipeId = recipe.getId();
         creatorId = recipe.getCreatorId();
 
         //Views initialization
         findViewsByIds();
 
-        if (creatorId.equals(AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid())) {// To show the Floating Action Button
+        if (Methods.thisUserCreateThisRecipe(recipe)) {// To show the Floating Action Button
             deleteBtn.show();
             editBtn.show();
         } else {// To hide the Floating Action Button
@@ -134,12 +135,6 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         deleteBtn.setOnClickListener(this);
     }
 
-    /*  ------------------------------------------------    */
-    private Recipe getRecipeObject() {
-        Intent intent = getIntent();
-        return (Recipe) intent.getSerializableExtra(RECIPE_DETAILS);
-    }
-
 
     /*  ------------------------------------------------    */
     private void InitializeActivity() {
@@ -195,19 +190,19 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private int getIconId(String type) {
+    private int getIconId(Recipe.MealType type) {
 
-        if (type.equals("Breakfast"))
-            return R.drawable.breakfast_icon;
-        else if (type.equals("Lunch"))
-            return R.drawable.lunch_icon;
-        else if (type.equals("Dinner"))
-            return R.drawable.dinner_icon;
-        else if (type.equals("Dessert"))
-            return R.drawable.sweet_icon;
-
+        switch (type) {
+            case Breakfast:
+                return R.drawable.breakfast_icon;
+            case Brunch:
+                return R.drawable.brunch_icon;
+            case Dessert:
+                return R.drawable.dessert_icon;
+            case Dinner:
+                return R.drawable.dinner_icon;
+        }
         return R.drawable.undefined_icon;
-
     }
 
     private void setFavoriteButtonOFF() {
@@ -228,7 +223,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
                 handleFavoritesButton();
                 break;
             case R.id.edit_button_details:
-                //...handle...
+                handleEditButton();
                 break;
             case R.id.delete_button_details:
                 handleDeleteButton();
@@ -236,6 +231,12 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
             default:
                 return;
         }
+    }
+
+    private void handleEditButton() {
+        Intent intent = new Intent(this, EditRecipeActivity.class);
+        intent.putExtra(RECIPE_DETAILS, recipe);
+        startActivityForResult(intent,EDIT_CODE_ID);
     }
 
     private void handleDeleteButton() {
@@ -281,6 +282,16 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
             favorites.add(recipe.getId());
             Toast.makeText(this, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK)
+            if (requestCode == EDIT_CODE_ID) {
+               recipe = Methods.getRecipeObject(data);
+                InitializeActivity();
+            }
     }
 
 }

@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipebook.firebase.AuthGoogleService;
+import com.example.recipebook.utils.Methods;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
@@ -38,14 +38,12 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
         presentedRecipes = new ArrayList<>();
 
-        /*----------------------------------------------------------------*/
-
-        //Observer for favoritesOnlyFlag-
-        //If true we want only favorites recipes in recycler view
-        //Else, we want to show all recipes
+        /*---------------OBSERVER-FOR-FAVORITES-ONLY-FLAG-----------------*/
         viewModel.getFavoritesOnlyFlag().observe((LifecycleOwner) context, favoritesOnlyFlag -> {
 
+            //If true we want only favorites recipes in recycler view
             if (favoritesOnlyFlag) {
+
                 //Stop observing for changes on all recipes
                 // Else it make a duplicates, so we want one active observer
                 viewModel.getAllRecipes().removeObservers((LifecycleOwner) context);
@@ -53,12 +51,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 //Get updated list of favorites recipes - for recyclerview updates
                 updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
 
-                //Observer for changes only on favorites recipes  - for recyclerview updates
+                /*-----OBSERVER-FOR-FAVORITES-RECIPE-LIST-----*/
                 viewModel.getFavoritesRecipes().observe((LifecycleOwner) context, favoritesRecipes ->
                         updatePresentedRecipes(favoritesRecipes));
 
 
-            } else {
+            } else { //Else, we want to show all recipes
+
                 //Stop observing for changes on favorites recipes -
                 // Else it make a duplicates, so we want one active observer
                 viewModel.getFavoritesRecipes().removeObservers((LifecycleOwner) context);
@@ -66,57 +65,41 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 //Get updated list of all recipes - for recyclerview updates
                 updatePresentedRecipes(viewModel.getAllRecipes().getValue());
 
-                //Observer for changes on all recipes  - for recyclerview updates
+                /*-----OBSERVER-FOR-ALL-RECIPES-LIST-----*/
                 viewModel.getAllRecipes().observe((LifecycleOwner) context, recipes ->
                         updatePresentedRecipes(recipes));
             }
         });
-        /*----------------------------------------------------------------*/
+
+        /*---------------OBSERVER-FOR-SHOW-ONLY-MY-RECIPES-FLAG-----------*/
         viewModel.getShowOnlyMyRecipesFlag().observe((LifecycleOwner) context, showOnlyMyRecipesFlag -> {
-                if (viewModel.getFavoritesOnlyFlag().getValue())
-                    updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
-                else
-                    updatePresentedRecipes(viewModel.getAllRecipes().getValue());
+            if (viewModel.getFavoritesOnlyFlag().getValue())
+                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
+            else
+                updatePresentedRecipes(viewModel.getAllRecipes().getValue());
 
         });
 
-
+        /*---------------OBSERVER-FOR-SEARCH-RESULTS-LIST-----------------*/
+        viewModel.getSearchResults().observe((LifecycleOwner) context, searchResults -> {
+            List<Recipe> filteredRecipes=new ArrayList<>();
+            if (viewModel.getFavoritesOnlyFlag().getValue())
+                filteredRecipes.addAll(viewModel.getFavoritesRecipes().getValue());
+            else
+                filteredRecipes.addAll(viewModel.getAllRecipes().getValue());
+            filteredRecipes.removeIf(recipe -> !searchResults.contains(recipe));
+            updatePresentedRecipes(filteredRecipes);
+        });
     }
 
-    public void filter(String query) {
 
-
-        presentedRecipes.clear();
-        List<Recipe> recipes;
-
-        if(viewModel.getFavoritesOnlyFlag().getValue()){
-            recipes = viewModel.getFavoritesRecipes().getValue();
-        }
-        else{
-            recipes = viewModel.getAllRecipes().getValue();
-        }
-
-        if(query.isEmpty() || query == null){
-            presentedRecipes.addAll(recipes);
-        } else{
-            query = query.toLowerCase();
-            for(Recipe item: recipes){
-                if(item.getDescription().toLowerCase().contains(query) || item.getRecipeName().toLowerCase().contains(query)){
-                    presentedRecipes.add(item);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
     //Populate list for recycler view with updated list
-
-
     private void updatePresentedRecipes(List<Recipe> recipes) {
         presentedRecipes.clear();
         if (viewModel.getShowOnlyMyRecipesFlag().getValue()) {
             recipes.forEach(recipe ->
             {
-                if (thisUserCreateThisRecipe(recipe))
+                if (Methods.thisUserCreateThisRecipe(recipe))
                     presentedRecipes.add(recipe);
             });
         } else
@@ -125,10 +108,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
     }
 
-    private boolean thisUserCreateThisRecipe(Recipe recipe) {
-        return recipe.getCreatorId().
-                equals(AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid());
-    }
+
 
     @NonNull
     @Override
@@ -178,8 +158,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             if (imgUrl.equals("")) {
                 imageView.setImageDrawable(null);
                 imageView.setBackgroundResource(R.drawable.no_image);
-            }
-            else {
+            } else {
                 Picasso.get().load(recipe.getImageUrl()).into(imageView);
             }
 

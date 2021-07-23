@@ -30,16 +30,19 @@ public class RecipesViewModel extends AndroidViewModel {
     private MutableLiveData<List<User>> usersLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
     private MutableLiveData<List<Recipe>> allRecipesLiveData;
+    private MutableLiveData<List<Recipe>> searchResultsLiveData;
+
     private MutableLiveData<Boolean> favoritesOnlyLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> showOnlyMyRecipesLiveData = new MutableLiveData<>();
 
     List<User> usersList;
     List<Recipe> favoritesRecipesList;
     List<Recipe> allRecipesList;
+    List<Recipe> searchResultsList;
 
     boolean favoritesOnlyFlag;
     boolean showOnlyMyRecipesFlag;
-    public static String searchQuery;
+
     RealTimeDBService realTimeDBService;
     DatabaseReference usersDBReference;
 
@@ -146,9 +149,12 @@ public class RecipesViewModel extends AndroidViewModel {
         usersList = new ArrayList<>();
         favoritesRecipesList = new ArrayList<>();
         allRecipesList = new ArrayList<>();
+        searchResultsList = new ArrayList<>();
+
         usersLiveData = new MutableLiveData<>();
         favoritesRecipesLiveData = new MutableLiveData<>();
         allRecipesLiveData = new MutableLiveData<>();
+        searchResultsLiveData = new MutableLiveData<>();
     }
 
     /*----------------------------------------------------------------*/
@@ -170,6 +176,13 @@ public class RecipesViewModel extends AndroidViewModel {
             allRecipesLiveData.setValue(allRecipesList);
         }
         return allRecipesLiveData;
+    }
+
+    public LiveData<List<Recipe>> getSearchResults() {
+        if (searchResultsLiveData.getValue() == null) {
+            searchResultsLiveData.setValue(searchResultsList);
+        }
+        return searchResultsLiveData;
     }
 
     public LiveData<Boolean> getFavoritesOnlyFlag() {
@@ -232,18 +245,6 @@ public class RecipesViewModel extends AndroidViewModel {
 
             );
 
-       /*
-            //for case of owner change recipe
-            for (Recipe recipe : user.getRecipes())
-                if (favorites.contains(recipe.getId())) {
-                    favoritesRecipesList.remove(recipe);
-                    favoritesRecipesList.add(recipe);
-                }
-
-            //for case of owner delete recipe
-            List<Recipe> favoritesRecipesListNew = favoritesRecipesList;
-            favoritesRecipesList.removeIf(recipe -> ownerDeleteRecipe(user, recipe));
-*/
             //update LiveData
             favoritesRecipesLiveData.setValue(favoritesRecipesList);
             allRecipesLiveData.setValue(allRecipesList);
@@ -291,6 +292,22 @@ public class RecipesViewModel extends AndroidViewModel {
 
 
         }
+    }
+
+    public void filter(String query) {
+        searchResultsList.clear();
+        if (query.isEmpty() || query == null) {
+            searchResultsList.addAll(allRecipesList);
+        } else {
+            query = query.toLowerCase();
+            for (Recipe item : allRecipesList) {
+                if (item.getDescription().toLowerCase().contains(query) || item.getRecipeName().toLowerCase().contains(query)) {
+                    searchResultsList.add(item);
+                }
+            }
+        }
+        searchResultsLiveData.setValue(searchResultsList);
+
     }
 }
 

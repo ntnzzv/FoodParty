@@ -22,8 +22,9 @@ import com.example.recipebook.utils.Constants;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
-import static com.example.recipebook.utils.Constants.RECIPE_NAME;
+import static com.example.recipebook.utils.Constants.RECIPE_ID;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
 import static com.example.recipebook.utils.Constants.USER_UID;
 
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private NetworkStateReceiver netStateReceiver;
     AuthGoogleService authGoogleService;
 
+    SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
         //Broadcast receiver for network state
         netStateReceiver = new NetworkStateReceiver();
 
-        Intent intent = new Intent(this, MyForegroundService.class);
+//        Intent intent = new Intent(this, MyForegroundService.class);
+//
+//        intent.putExtra(Constants.FILE_PATH, (Bundle) null);
+//        intent.putExtra(RECIPE_ID, "null");
+//        intent.putExtra(USER_UID, "userUid");
 
-        intent.putExtra(Constants.FILE_PATH, (Bundle) null);
-        intent.putExtra(RECIPE_NAME,"null");
-        intent.putExtra(USER_UID,"userUid");
-
-        startForegroundService(intent);
+        //startForegroundService(intent);
     }
 
     @Override
@@ -95,19 +97,20 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
 
         MenuItem item = menu.findItem(R.id.search_item);
-        SearchView searchView = (SearchView) item.getActionView();
+        searchView = (SearchView) item.getActionView();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+        //listener for changes in search box
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.filter(query);
+                viewModel.filter(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
+                viewModel.filter(newText);
                 return true;
             }
         });
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
         switch (item.getItemId()) {
             case R.id.search_item:
-                //handle search
+                //handling above
                 return true;
             case R.id.settings_item:
                 intent = new Intent(this, SettingsActivity.class);
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /*----------------------------------------------------------------*/
+    /*----------------------BUTTONS-HANDLERS--------------------------*/
 
     //add button handler
     public void onAddRecipe(View view) {
@@ -171,6 +174,39 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            //hide the search view
+            searchView.onActionViewCollapsed();
+        } else {
+
+
+
+            new FancyGifDialog.Builder(this)
+                    .setTitle("Exit")
+                    .setMessage("Ary you sure you want to exit?")
+                    .setTitleTextColor(R.color.browser_actions_title_color)
+                    .setDescriptionTextColor(R.color.browser_actions_text_color)
+                    .setNegativeBtnText(android.R.string.no)
+                    .setPositiveBtnBackground(R.color.common_google_signin_btn_text_dark)
+                    .setPositiveBtnText(android.R.string.yes)
+                    .setNegativeBtnBackground(R.color.purple_200)
+                    .setGifResource(R.drawable.exit_gif3)
+                    .isCancellable(true)
+                    .OnPositiveClicked(() -> {
+                        super.onBackPressed();
+                    })
+                    .OnNegativeClicked(() -> {
+                    })
+                    .build();
+
+
+        }
+    }
+
     /*----------------------------------------------------------------*/
 
     private void checkIfUserSigned() {

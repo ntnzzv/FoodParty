@@ -22,7 +22,7 @@ import com.google.firebase.storage.StorageReference;
 
 import static com.example.recipebook.utils.Constants.FILE_PATH;
 import static com.example.recipebook.utils.Constants.IMAGE_URL_FIELD_NAME;
-import static com.example.recipebook.utils.Constants.RECIPE_NAME;
+import static com.example.recipebook.utils.Constants.RECIPE_ID;
 import static com.example.recipebook.utils.Constants.USER_UID;
 
 public class UploadImageToCloudService extends Service {
@@ -50,7 +50,7 @@ public class UploadImageToCloudService extends Service {
     public int onStartCommand(Intent i, int flags, int startId) {
         Bundle bundle = i.getExtras();
         Uri filePath = bundle.getParcelable(FILE_PATH);
-        String recipeName = bundle.getString(RECIPE_NAME);
+        String recipeId = bundle.getString(RECIPE_ID);
         String userUid = bundle.getString(USER_UID);
 
         Intent intent = new Intent(this, MainActivity.class);
@@ -75,7 +75,7 @@ public class UploadImageToCloudService extends Service {
                                     public void onSuccess(Uri uri) {
                                         //Get reference to imageUrl field in DB and set the path to image in stodge cloud (uri)
                                         RealTimeDBService.getInstance()
-                                                .getReferenceToRecipeField(userUid, recipeName, IMAGE_URL_FIELD_NAME)
+                                                .getReferenceToRecipeField(userUid, recipeId, IMAGE_URL_FIELD_NAME)
                                                 .setValue(uri.toString());
                                         updateNotification("Image uploaded successfully");
                                     }
