@@ -12,12 +12,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="100dp">
 
         <ImageView
             android:id="@+id/iv_image_item"
-            android:layout_width="89dp"
-            android:layout_height="85dp"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
             android:contentDescription="description"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
