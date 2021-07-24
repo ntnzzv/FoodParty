@@ -14,19 +14,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipebook.services.MyForegroundService;
 import com.example.recipebook.firebase.AuthGoogleService;
 
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
-import com.example.recipebook.utils.Constants;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
-import static com.example.recipebook.utils.Constants.RECIPE_ID;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
-import static com.example.recipebook.utils.Constants.USER_UID;
 
 
 public class MainActivity extends AppCompatActivity {

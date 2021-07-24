@@ -27,7 +27,7 @@ import static com.example.recipebook.utils.Constants.USER_UID;
 
 public class UploadImageToCloudService extends Service {
     String CHANNEL_ID = "recipes_channel_01";
-    private static final int NOTIFICATION_ID = 1;
+    private static int NOTIFICATION_ID = 1;
 
     static NotificationManager notificationManager = null;
 
@@ -53,15 +53,6 @@ public class UploadImageToCloudService extends Service {
         String recipeId = bundle.getString(RECIPE_ID);
         String userUid = bundle.getString(USER_UID);
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP / Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-
-        builder = new Notification.Builder(this, CHANNEL_ID)
-                .setContentTitle("Image upload status")
-                .setSmallIcon(R.drawable.app_icon2)
-                .setContentIntent(pendingIntent);
 
         if (filePath != null) {
             // Defining the child of storageReference
@@ -77,17 +68,15 @@ public class UploadImageToCloudService extends Service {
                                         RealTimeDBService.getInstance()
                                                 .getReferenceToRecipeField(userUid, recipeId, IMAGE_URL_FIELD_NAME)
                                                 .setValue(uri.toString());
-                                        updateNotification("Image uploaded successfully");
+                                        updateNotification(getString(R.string.notification_upload_ok_));
                                     }
                                 })
                                 .addOnFailureListener(e -> {
                                     // Error, Image not uploaded
-                                    updateNotification("Image upload failed");
+                                    updateNotification(getString(R.string.notification_upload_fail));
                                 });
                     });
         }
-
-        updateNotification(Integer.toString(0));
         return super.onStartCommand(i, flags, startId);
     }
 
@@ -112,16 +101,17 @@ public class UploadImageToCloudService extends Service {
                 .setContentIntent(pendingIntent);
 
         startForeground(NOTIFICATION_ID, updateNotification(Integer.toString(0)));
+        builder.setContentTitle("Image upload status");
     }
 
     private Notification updateNotification(String details) {
-        builder.setContentText(details).setOnlyAlertOnce(false);
+
+        builder.setContentText(details).setAutoCancel(true);
         Notification notification = builder.build();
-        notification.flags = Notification.FLAG_ONLY_ALERT_ONCE;
-        notificationManager.notify(NOTIFICATION_ID, notification);
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(NOTIFICATION_ID++, notification);
 
         return notification;
     }
-
-
 }
+

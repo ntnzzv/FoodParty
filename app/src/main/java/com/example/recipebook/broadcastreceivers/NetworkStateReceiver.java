@@ -10,7 +10,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class NetworkStateReceiver extends BroadcastReceiver {
-    static boolean off=false;
+    private static boolean off=false;
+
+    public static boolean isOff() {
+        return off;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();

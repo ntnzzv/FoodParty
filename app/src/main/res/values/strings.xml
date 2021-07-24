@@ -37,5 +37,7 @@
     <string name="recipe_submitted">Recipe submitted!</string>
     <string name="select_image">Select Image from here...</string>
     <string name="added">added</string>
+    <string name="notification_upload_ok_">Image uploaded successfully</string>
+    <string name="notification_upload_fail">Image upload failed</string>
 
 </resources>

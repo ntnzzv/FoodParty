@@ -146,8 +146,10 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         setList(recipe.getInstructions(), instructionsLl);
 
         String imgUrl = recipe.getImageUrl();
-        if (imgUrl.equals(""))
+        if (imgUrl.equals("")) {
+            imageView.setImageDrawable(null);
             imageView.setBackgroundResource(R.drawable.no_image);
+        }
         else
             Picasso.get().load(recipe.getImageUrl()).into(imageView);
 
@@ -289,7 +291,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK)
             if (requestCode == EDIT_CODE_ID) {
-                recipe = (Recipe) getIntent().getSerializableExtra(RECIPE_DETAILS);
+                recipe = (Recipe) data.getSerializableExtra(RECIPE_DETAILS);
                 InitializeActivity();
             }
     }

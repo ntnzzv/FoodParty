@@ -40,7 +40,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".services.MyForegroundService" />
         <service android:name=".services.UploadImageToCloudService" />
     </application>
 

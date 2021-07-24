@@ -43,6 +43,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static com.example.recipebook.utils.Constants.FILE_PATH;
+import static com.example.recipebook.utils.Constants.INGREDIENTS_FIELD_NAME;
+import static com.example.recipebook.utils.Constants.INSTRUCTIONS_FIELD_NAME;
 import static com.example.recipebook.utils.Constants.RECIPE_ID;
 import static com.example.recipebook.utils.Constants.USER_UID;
 
@@ -65,7 +67,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     private Uri filePath;
 
     private BatteryInfoReceiver batteryInfoReceiver;
-    private boolean userSelectImage =false;//לא לשכוח לטפל במגרה של היפוך מסך (לשמור ערכים )
+    private boolean userSelectImage = false;//לא לשכוח לטפל במגרה של היפוך מסך (לשמור ערכים )
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +75,7 @@ public class AddRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_recipe);
         netStateReceiver = new NetworkStateReceiver();
-        if(savedInstanceState != null){
-            instructions = (ArrayList<String>) savedInstanceState.get("instructions");
-            ingredients = (ArrayList<String>)savedInstanceState.get("ingredients");
-        }
+
         InitializeActivity();
 
         batteryInfoReceiver = new BatteryInfoReceiver();
@@ -156,14 +155,23 @@ public class AddRecipeActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList("ingredients",ingredients);
-        outState.putStringArrayList("instructions",instructions);
+        outState.putStringArrayList("ingredients", ingredients);
+        outState.putStringArrayList("instructions", instructions);
 
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            instructions = (ArrayList<String>) savedInstanceState.get(INSTRUCTIONS_FIELD_NAME);
+            ingredients = (ArrayList<String>) savedInstanceState.get(INGREDIENTS_FIELD_NAME);
+        }
     }
 
     private void populateDropdown() {
 
-        Recipe.MealType[] options =  Recipe.MealType.values();
+        Recipe.MealType[] options = Recipe.MealType.values();
 
         ArrayAdapter<Recipe.MealType> adapter =
                 new ArrayAdapter<>(
@@ -195,7 +203,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     // Select image btn pressed
     public void onSelectImage(View view) {
         // Defining Implicit Intent to mobile gallery
-        userSelectImage =true;
+        userSelectImage = true;
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -244,33 +252,36 @@ public class AddRecipeActivity extends AppCompatActivity {
                 .setGifResource(R.drawable.gif1)   //Pass your Gif here
                 .isCancellable(true)
                 .OnPositiveClicked(() -> {
-                    Toast.makeText(AddRecipeActivity.this, R.string.recipe_submitted, Toast.LENGTH_SHORT).show();
+                    if (!NetworkStateReceiver.isOff()) {
+                        Toast.makeText(AddRecipeActivity.this, R.string.recipe_submitted, Toast.LENGTH_SHORT).show();
 
-                    Collections.reverse(ingredients);
-                    Collections.reverse(instructions);
+                        Collections.reverse(ingredients);
+                        Collections.reverse(instructions);
 
-                    Recipe recipe = new Recipe(recipeNameText, descriptionText, ingredients, instructions, typeText);
-                    String recipeId=UUID.randomUUID().toString();
-                    //add new recipe to database
-                    RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipeId).setValue(recipe);
+                        Recipe recipe = new Recipe(recipeNameText, descriptionText, ingredients, instructions, typeText);
 
-                    //foreground service
-                    if(userSelectImage)
-                    {
-                        Intent intent = new Intent(this, UploadImageToCloudService.class);
 
-                        intent.putExtra(FILE_PATH, filePath);
-                        intent.putExtra(RECIPE_ID, recipeId);
-                        intent.putExtra(USER_UID, userUid);
+                        String recipeId = UUID.randomUUID().toString();
+                        //add new recipe to database
+                        RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipeId).setValue(recipe);
 
-                        startForegroundService(intent);
-                    }
+                        //foreground service
+                        if (userSelectImage) {
+                            Intent intent = new Intent(this, UploadImageToCloudService.class);
 
-                    //add image to storage cloud and then update imageUrl in DB
-                    //  ImageHandler.UploadImage( filePath, userUid, recipeNameText);
+                            intent.putExtra(FILE_PATH, filePath);
+                            intent.putExtra(RECIPE_ID, recipeId);
+                            intent.putExtra(USER_UID, userUid);
 
-                    //back to main activity
-                    finish();
+                            //add image to storage cloud and then update imageUrl in DB
+                            startForegroundService(intent);
+                        }
+
+                        //back to main activity
+                        finish();
+                    } else
+                        Toast.makeText(this, "Network OFF, try letter", Toast.LENGTH_LONG).show();
+
                 })
                 .OnNegativeClicked(() -> Toast.makeText(AddRecipeActivity.this, "Submission canceled", Toast.LENGTH_SHORT).show())
                 .build();
@@ -303,9 +314,8 @@ public class AddRecipeActivity extends AppCompatActivity {
                 // Log the exception
                 e.printStackTrace();
             }
-        }
-        else
-            userSelectImage =false;
+        } else
+            userSelectImage = false;
 
     }
 

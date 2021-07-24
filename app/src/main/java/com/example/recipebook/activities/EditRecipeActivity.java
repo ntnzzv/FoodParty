@@ -27,7 +27,7 @@ import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
-import com.example.recipebook.services.MyForegroundService;
+import com.example.recipebook.services.UploadImageToCloudService;
 import com.example.recipebook.utils.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -94,7 +94,6 @@ public class EditRecipeActivity extends AppCompatActivity {
 
         if (recipe.getImageUrl().equals("")) {
             imageView.setImageDrawable(null);
-            imageView.setBackgroundResource(R.drawable.no_image);
         } else {
             Picasso.get().load(recipe.getImageUrl()).into(imageView);
         }
@@ -299,7 +298,7 @@ public class EditRecipeActivity extends AppCompatActivity {
                     if(userSelectImage)
                     {
                         //add image to storage cloud and then update imageUrl in DB
-                        Intent intent = new Intent(this, MyForegroundService.class);
+                        Intent intent = new Intent(this, UploadImageToCloudService.class);
 
                         intent.putExtra(Constants.FILE_PATH, filePath);
                         intent.putExtra(RECIPE_ID, recipe.getId());
@@ -307,7 +306,6 @@ public class EditRecipeActivity extends AppCompatActivity {
 
                         startForegroundService(intent);
                     }
-
 
                     Intent intent = new Intent();
                     intent.putExtra(RECIPE_DETAILS, recipe);
@@ -349,7 +347,6 @@ public class EditRecipeActivity extends AppCompatActivity {
         }
         else
             userSelectImage =false;
-
     }
 
 }
