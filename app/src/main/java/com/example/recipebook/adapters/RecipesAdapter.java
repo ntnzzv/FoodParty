@@ -158,7 +158,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 imageView.setImageDrawable(null);
                 imageView.setBackgroundResource(R.drawable.no_image);
             } else {
-                Picasso.get().load(recipe.getImageUrl()).into(imageView);
+                Picasso.get().load(recipe.getImageUrl()).fit().centerCrop()
+                        .placeholder(R.drawable.no_image)
+                        .into(imageView);
             }
 
         }
