@@ -239,7 +239,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     }
 
     private void handleEditButton() {
-        Intent intent = new Intent(this, AddRecipeActivity.class);
+        Intent intent = new Intent(this, AddEditRecipeActivity.class);
         intent.putExtra(RECIPE_DETAILS, recipe);
         intent.putExtra(CALLING_ACTIVITY, ActivityConstants.ACTIVITY_DETAILS);
         startActivityForResult(intent, EDIT_CODE_ID);

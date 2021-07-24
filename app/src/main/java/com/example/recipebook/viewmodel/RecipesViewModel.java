@@ -296,7 +296,7 @@ public class RecipesViewModel extends AndroidViewModel {
 
     public void filter(String query) {
         searchResultsList.clear();
-        if (query.isEmpty() || query == null) {
+        if ( query == null||query.isEmpty() ) {
             searchResultsList.addAll(allRecipesList);
         } else {
             query = query.toLowerCase();
@@ -306,6 +306,7 @@ public class RecipesViewModel extends AndroidViewModel {
                 }
             }
         }
+
         searchResultsLiveData.setValue(searchResultsList);
 
     }

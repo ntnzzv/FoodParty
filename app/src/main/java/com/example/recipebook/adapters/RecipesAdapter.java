@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.recipebook.activities.MainActivity;
 import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
@@ -81,13 +82,17 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
         /*---------------OBSERVER-FOR-SEARCH-RESULTS-LIST-----------------*/
         viewModel.getSearchResults().observe((LifecycleOwner) context, searchResults -> {
-            List<Recipe> filteredRecipes=new ArrayList<>();
-            if (viewModel.getFavoritesOnlyFlag().getValue())
-                filteredRecipes.addAll(viewModel.getFavoritesRecipes().getValue());
-            else
-                filteredRecipes.addAll(viewModel.getAllRecipes().getValue());
-            filteredRecipes.removeIf(recipe -> !searchResults.contains(recipe));
-            updatePresentedRecipes(filteredRecipes);
+            if(MainActivity.search) {
+                List<Recipe> filteredRecipes = new ArrayList<>();
+                if (viewModel.getFavoritesOnlyFlag().getValue())
+                    filteredRecipes.addAll(viewModel.getFavoritesRecipes().getValue());
+                else
+                    filteredRecipes.addAll(viewModel.getAllRecipes().getValue());
+                filteredRecipes.removeIf(recipe -> !searchResults.contains(recipe));
+                updatePresentedRecipes(filteredRecipes);
+            }
+
+
         });
     }
 

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeBook">
         <activity
-            android:name=".activities.AddRecipeActivity"
+            android:name=".activities.AddEditRecipeActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".activities.SettingsActivity" />

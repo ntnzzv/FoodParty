@@ -18,7 +18,6 @@ import com.example.recipebook.firebase.AuthGoogleService;
 
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
 import com.example.recipebook.utils.ActivityConstants;
-import com.example.recipebook.utils.Constants;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
@@ -39,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     AuthGoogleService authGoogleService;
 
     SearchView searchView;
+    public static boolean search=false;
+
+    /*----------------------------------------------------------------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +50,16 @@ public class MainActivity extends AppCompatActivity {
         checkIfUserSigned();
 
         //get view model
-        viewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
+        if (viewModel == null)
+            viewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
 
         //set recycler view adapter
         setRecyclerViewAdapter();
 
         //Broadcast receiver for network state
         netStateReceiver = NetworkStateReceiver.getInstance();
+
+
     }
 
 
@@ -96,12 +101,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                search=true;
                 viewModel.filter(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                search=true;
                 viewModel.filter(newText);
                 return true;
             }
@@ -159,13 +166,11 @@ public class MainActivity extends AppCompatActivity {
     //add button handler
     public void onAddRecipe(View view) {
         if (userAlreadySignedFlag) {
-            Intent intent = new Intent(this, AddRecipeActivity.class);
+            Intent intent = new Intent(this, AddEditRecipeActivity.class);
             intent.putExtra(CALLING_ACTIVITY, ActivityConstants.ACTIVITY_MAIN);
             startActivity(intent);
         } else
             openLoginActivity();
-
-
     }
 
     @Override
@@ -174,9 +179,8 @@ public class MainActivity extends AppCompatActivity {
             searchView.setIconified(true);
             //hide the search view
             searchView.onActionViewCollapsed();
+            search=false;
         } else {
-
-
 
             new FancyGifDialog.Builder(this)
                     .setTitle("Exit")

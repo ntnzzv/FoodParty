@@ -1,18 +1,15 @@
 package com.example.recipebook.adapters;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipebook.R;
-import com.example.recipebook.activities.AddRecipeActivity;
 
 import java.util.ArrayList;
 

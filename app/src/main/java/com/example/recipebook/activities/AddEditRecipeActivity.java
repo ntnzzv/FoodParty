@@ -1,7 +1,6 @@
 package com.example.recipebook.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +12,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -32,7 +30,6 @@ import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.services.UploadImageToCloudService;
 import com.example.recipebook.utils.ActivityConstants;
-import com.example.recipebook.utils.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
@@ -46,14 +43,12 @@ import java.util.UUID;
 
 import static com.example.recipebook.utils.Constants.CALLING_ACTIVITY;
 import static com.example.recipebook.utils.Constants.FILE_PATH;
-import static com.example.recipebook.utils.Constants.INGREDIENTS_FIELD_NAME;
-import static com.example.recipebook.utils.Constants.INSTRUCTIONS_FIELD_NAME;
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 import static com.example.recipebook.utils.Constants.RECIPE_ID;
 import static com.example.recipebook.utils.Constants.USER_UID;
 
 
-public class AddRecipeActivity extends AppCompatActivity {
+public class AddEditRecipeActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 22;
     private static final String USER_SELECT_IMG = "userSelectImage";
@@ -83,22 +78,28 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     private NetworkStateReceiver netStateReceiver;
     private BatteryInfoReceiver batteryInfoReceiver;
+
     private int callingActivity;
-
-
+    
+    /*----------------------------------------------------------------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_recipe);
+        setContentView(R.layout.activity_add_edit_recipe);
 
+        //broadcast receivers
         netStateReceiver = NetworkStateReceiver.getInstance();
         batteryInfoReceiver = BatteryInfoReceiver.getInstance();
 
+        //for check - the aim is add or edit recipe ?
         callingActivity = getIntent().getIntExtra(CALLING_ACTIVITY, 0);
 
+        //for edit - receive recipe from RecipeDetailsActivity.
         if (callingActivity == ActivityConstants.ACTIVITY_DETAILS)
             recipe = (Recipe) getIntent().getSerializableExtra(RECIPE_DETAILS);
+
+        //for add- create new one
         if (callingActivity == ActivityConstants.ACTIVITY_MAIN)
             recipe = new Recipe();
 
@@ -108,11 +109,12 @@ public class AddRecipeActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        saveUserInput();
-        setRecipeDetails();
-        outState.putSerializable(RECIPE_DETAILS, recipe);
-        outState.putBoolean(USER_SELECT_IMG, userSelectImage);
+        
+        //In case of rotation
+        saveUserInput(); // it saves user input from vies
+        setRecipeDetails(); //and put input into recipe object
+        outState.putSerializable(RECIPE_DETAILS, recipe); // and then saves it in bundle
+        outState.putBoolean(USER_SELECT_IMG, userSelectImage); //if user already select image we want to know ot
         if (userSelectImage)
             outState.putParcelable(FILE_PATH, filePath);
     }
@@ -295,7 +297,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                 .isCancellable(true)
                 .OnPositiveClicked(() -> {
                     if (!NetworkStateReceiver.isOff()) {
-                        Toast.makeText(AddRecipeActivity.this, R.string.recipe_submitted, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddEditRecipeActivity.this, R.string.recipe_submitted, Toast.LENGTH_SHORT).show();
 
                         String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
 
@@ -330,7 +332,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                         Toast.makeText(this, "Network OFF, try letter", Toast.LENGTH_LONG).show();
 
                 })
-                .OnNegativeClicked(() -> Toast.makeText(AddRecipeActivity.this, "Submission canceled", Toast.LENGTH_SHORT).show())
+                .OnNegativeClicked(() -> Toast.makeText(AddEditRecipeActivity.this, "Submission canceled", Toast.LENGTH_SHORT).show())
                 .build();
 
     }
@@ -342,7 +344,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        AddRecipeActivity.super.onBackPressed();
+                        AddEditRecipeActivity.super.onBackPressed();
                     }
                 })
                 .setNegativeButton("No", null)
