@@ -3,6 +3,7 @@ package com.example.recipebook.firebase;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.recipebook.R;
+import com.example.recipebook.entities.Recipe;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -48,5 +49,13 @@ public class AuthGoogleService {
 
     public void signOut() {
         firebaseAuth.signOut();
+    }
+
+    public static boolean userSigned() {
+        return AuthGoogleService.getInstance().getFirebaseCurrentUser()!=null;
+    }
+    public static boolean currentUserCreateThisRecipe(Recipe recipe) {
+        return recipe.getCreatorId().
+                equals(AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid());
     }
 }

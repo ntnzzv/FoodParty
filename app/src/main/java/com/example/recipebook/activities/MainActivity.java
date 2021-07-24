@@ -56,15 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Broadcast receiver for network state
         netStateReceiver = new NetworkStateReceiver();
-
-//        Intent intent = new Intent(this, MyForegroundService.class);
-//
-//        intent.putExtra(Constants.FILE_PATH, (Bundle) null);
-//        intent.putExtra(RECIPE_ID, "null");
-//        intent.putExtra(USER_UID, "userUid");
-
-        //startForegroundService(intent);
     }
+
 
     @Override
     protected void onResume() {

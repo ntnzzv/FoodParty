@@ -29,7 +29,6 @@ import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.services.MyForegroundService;
 import com.example.recipebook.utils.Constants;
-import com.example.recipebook.utils.Methods;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
@@ -39,7 +38,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.UUID;
 
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 import static com.example.recipebook.utils.Constants.RECIPE_ID;
@@ -78,7 +76,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_recipe);
         netStateReceiver = new NetworkStateReceiver();
 
-        recipe= Methods.getRecipeObject(getIntent());
+        recipe=(Recipe) getIntent().getSerializableExtra(RECIPE_DETAILS);
         InitializeActivity();
 
         fillWithExistedData();

@@ -18,12 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
+import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
-import com.example.recipebook.utils.Methods;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
-import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
@@ -70,14 +69,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         netStateReceiver = new NetworkStateReceiver();
 
         //From Intent
-        recipe = Methods.getRecipeObject(getIntent());
+        recipe = (Recipe) getIntent().getSerializableExtra(RECIPE_DETAILS);
         recipeId = recipe.getId();
         creatorId = recipe.getCreatorId();
 
         //Views initialization
         findViewsByIds();
 
-        if (Methods.thisUserCreateThisRecipe(recipe)) {// To show the Floating Action Button
+        if (AuthGoogleService.userSigned() && AuthGoogleService.currentUserCreateThisRecipe(recipe)) {// To show the Floating Action Button
             deleteBtn.show();
             editBtn.show();
         } else {// To hide the Floating Action Button
@@ -100,6 +99,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         //UI updating
         InitializeActivity();
     }
+
 
     @Override
     protected void onResume() {
@@ -236,7 +236,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     private void handleEditButton() {
         Intent intent = new Intent(this, EditRecipeActivity.class);
         intent.putExtra(RECIPE_DETAILS, recipe);
-        startActivityForResult(intent,EDIT_CODE_ID);
+        startActivityForResult(intent, EDIT_CODE_ID);
     }
 
     private void handleDeleteButton() {
@@ -289,7 +289,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK)
             if (requestCode == EDIT_CODE_ID) {
-               recipe = Methods.getRecipeObject(data);
+                recipe = (Recipe) getIntent().getSerializableExtra(RECIPE_DETAILS);
                 InitializeActivity();
             }
     }

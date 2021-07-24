@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipebook.utils.Methods;
+import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
@@ -21,7 +21,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 
@@ -99,7 +98,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         if (viewModel.getShowOnlyMyRecipesFlag().getValue()) {
             recipes.forEach(recipe ->
             {
-                if (Methods.thisUserCreateThisRecipe(recipe))
+                if (AuthGoogleService.currentUserCreateThisRecipe(recipe))
                     presentedRecipes.add(recipe);
             });
         } else
