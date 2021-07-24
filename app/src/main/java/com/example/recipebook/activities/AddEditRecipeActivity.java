@@ -246,7 +246,7 @@ public class AddEditRecipeActivity extends AppCompatActivity {
             }
         } else
             Picasso.get().load(recipe.getImageUrl()).fit().centerCrop()
-                    .placeholder(R.drawable.no_image)
+                    .placeholder(R.drawable.loading)
                     .into(imageView);
 
     }

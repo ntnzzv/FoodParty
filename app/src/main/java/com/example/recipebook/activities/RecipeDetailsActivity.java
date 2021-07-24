@@ -154,7 +154,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         }
         else
             Picasso.get().load(recipe.getImageUrl()).fit().centerCrop()
-                    .placeholder(R.drawable.no_image)
+                    .placeholder(R.drawable.loading)
                     .into(imageView);
 
         setToolbar();

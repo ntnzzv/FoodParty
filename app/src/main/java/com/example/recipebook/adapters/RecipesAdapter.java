@@ -161,7 +161,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                 imageView.setBackgroundResource(R.drawable.no_image);
             } else {
                 Picasso.get().load(recipe.getImageUrl()).fit().centerCrop()
-                        .placeholder(R.drawable.no_image)
+                        .placeholder(R.drawable.loading)
                         .into(imageView);
             }
 
