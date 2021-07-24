@@ -14,11 +14,10 @@ public class AuthGoogleService {
 
     private static AuthGoogleService authGoogleServiceInstance = null;
     FirebaseAuth firebaseAuth;
-    FirebaseUser firebaseCurrentUser;
+
 
     private AuthGoogleService() {
         firebaseAuth = FirebaseAuth.getInstance();
-        setFirebaseCurrentUser();
     }
 
     public static AuthGoogleService getInstance() {
@@ -39,23 +38,21 @@ public class AuthGoogleService {
         return firebaseAuth;
     }
 
-    public void setFirebaseCurrentUser() {
-        firebaseCurrentUser = firebaseAuth.getCurrentUser();
-    }
+
 
     public FirebaseUser getFirebaseCurrentUser() {
-        return firebaseCurrentUser;
+        return firebaseAuth.getCurrentUser();
     }
 
     public void signOut() {
         firebaseAuth.signOut();
     }
 
-    public static boolean userSigned() {
-        return AuthGoogleService.getInstance().getFirebaseCurrentUser()!=null;
-    }
     public static boolean currentUserCreateThisRecipe(Recipe recipe) {
         return recipe.getCreatorId().
                 equals(AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid());
+    }
+    public static boolean userSigned() {
+        return AuthGoogleService.getInstance().getFirebaseCurrentUser()!=null;
     }
 }

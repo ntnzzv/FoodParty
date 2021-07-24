@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         authGoogleService.getFirebaseAuth().signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        authGoogleService.setFirebaseCurrentUser();
+
 
                         //return to main activity
                         Intent intent = new Intent();
