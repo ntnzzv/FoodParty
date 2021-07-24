@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Broadcast receiver for network state
         netStateReceiver = NetworkStateReceiver.getInstance();
-
-
     }
 
 
@@ -79,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(netStateReceiver);
 
     }
+
 
     /*----------------------------------------------------------------*/
     private void setRecyclerViewAdapter() {
@@ -171,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         } else
             openLoginActivity();
+
+
     }
 
     @Override
@@ -181,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
             searchView.onActionViewCollapsed();
             search=false;
         } else {
+
+
 
             new FancyGifDialog.Builder(this)
                     .setTitle("Exit")

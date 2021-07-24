@@ -20,12 +20,13 @@ import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.activities.RecipeDetailsActivity;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 
-public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> {
+public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeViewHolder> implements Serializable {
 
     private final Context context;
     private final RecipesViewModel viewModel;
@@ -70,16 +71,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
                         updatePresentedRecipes(recipes));
             }
         });
-
-        /*---------------OBSERVER-FOR-SHOW-ONLY-MY-RECIPES-FLAG-----------*/
-        viewModel.getShowOnlyMyRecipesFlag().observe((LifecycleOwner) context, showOnlyMyRecipesFlag -> {
-            if (viewModel.getFavoritesOnlyFlag().getValue())
-                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
-            else
-                updatePresentedRecipes(viewModel.getAllRecipes().getValue());
-
-        });
-
         /*---------------OBSERVER-FOR-SEARCH-RESULTS-LIST-----------------*/
         viewModel.getSearchResults().observe((LifecycleOwner) context, searchResults -> {
             if(MainActivity.search) {
@@ -94,8 +85,17 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
 
         });
-    }
 
+        /*---------------OBSERVER-FOR-SHOW-ONLY-MY-RECIPES-FLAG-----------*/
+        viewModel.getShowOnlyMyRecipesFlag().observe((LifecycleOwner) context, showOnlyMyRecipesFlag -> {
+            if (viewModel.getFavoritesOnlyFlag().getValue())
+                updatePresentedRecipes(viewModel.getFavoritesRecipes().getValue());
+            else
+                updatePresentedRecipes(viewModel.getAllRecipes().getValue());
+
+        });
+
+    }
 
     //Populate list for recycler view with updated list
     private void updatePresentedRecipes(List<Recipe> recipes) {
@@ -109,10 +109,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         } else
             presentedRecipes.addAll(recipes);
         notifyDataSetChanged();
-
     }
-
-
 
     @NonNull
     @Override
@@ -170,5 +167,4 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
         }
     }
-
 }
