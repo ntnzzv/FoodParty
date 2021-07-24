@@ -9,8 +9,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.recipebook.firebase.AuthGoogleService;
+
 public class NetworkStateReceiver extends BroadcastReceiver {
     private static boolean off=false;
+    private static NetworkStateReceiver networkStateReceiverInstance = null;
+
+    public static NetworkStateReceiver getInstance() {
+        if (networkStateReceiverInstance == null)
+            networkStateReceiverInstance = new NetworkStateReceiver();
+        return networkStateReceiverInstance;
+    }
+
+    private NetworkStateReceiver() {
+    }
 
     public static boolean isOff() {
         return off;

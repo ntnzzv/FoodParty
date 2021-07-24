@@ -31,10 +31,12 @@ import com.example.recipebook.entities.Recipe;
 import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.services.UploadImageToCloudService;
+import com.example.recipebook.utils.ActivityConstants;
 import com.example.recipebook.utils.Constants;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,9 +44,11 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.example.recipebook.utils.Constants.CALLING_ACTIVITY;
 import static com.example.recipebook.utils.Constants.FILE_PATH;
 import static com.example.recipebook.utils.Constants.INGREDIENTS_FIELD_NAME;
 import static com.example.recipebook.utils.Constants.INSTRUCTIONS_FIELD_NAME;
+import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
 import static com.example.recipebook.utils.Constants.RECIPE_ID;
 import static com.example.recipebook.utils.Constants.USER_UID;
 
@@ -52,8 +56,7 @@ import static com.example.recipebook.utils.Constants.USER_UID;
 public class AddRecipeActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 22;
-
-    RecyclerView instructionsRecycler, ingredientsRecycler;
+    private static final String USER_SELECT_IMG = "userSelectImage";
 
     InstructionsAdapter instructionsAdapter;
     IngredientsAdapter ingredientsAdapter;
@@ -61,49 +64,96 @@ public class AddRecipeActivity extends AppCompatActivity {
     ArrayList<String> instructions = new ArrayList<>();
     ArrayList<String> ingredients = new ArrayList<>();
 
+    RecyclerView instructionsRecycler, ingredientsRecycler;
+
     TextInputEditText instructionTextInput, ingredientTextInput;
-    private NetworkStateReceiver netStateReceiver;
+    TextInputEditText descriptionView;
+    AutoCompleteTextView typeView;
+    EditText recipeNameView;
+    ImageView imageView;
+    TextInputLayout descriptionLayout, typeLayout, instructionsLayout, ingredientsLayout;
+
+    private Recipe recipe;
+    private String descriptionText;
+    private String typeText;
+    private String recipeNameText;
 
     private Uri filePath;
+    private boolean userSelectImage = false;
 
+    private NetworkStateReceiver netStateReceiver;
     private BatteryInfoReceiver batteryInfoReceiver;
-    private boolean userSelectImage = false;//לא לשכוח לטפל במגרה של היפוך מסך (לשמור ערכים )
+    private int callingActivity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_recipe);
-        netStateReceiver = new NetworkStateReceiver();
 
-        InitializeActivity();
+        netStateReceiver = NetworkStateReceiver.getInstance();
+        batteryInfoReceiver = BatteryInfoReceiver.getInstance();
 
-        batteryInfoReceiver = new BatteryInfoReceiver();
+        callingActivity = getIntent().getIntExtra(CALLING_ACTIVITY, 0);
 
+        if (callingActivity == ActivityConstants.ACTIVITY_DETAILS)
+            recipe = (Recipe) getIntent().getSerializableExtra(RECIPE_DETAILS);
+        if (callingActivity == ActivityConstants.ACTIVITY_MAIN)
+            recipe = new Recipe();
 
+        findViewsByIds();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        saveUserInput();
+        setRecipeDetails();
+        outState.putSerializable(RECIPE_DETAILS, recipe);
+        outState.putBoolean(USER_SELECT_IMG, userSelectImage);
+        if (userSelectImage)
+            outState.putParcelable(FILE_PATH, filePath);
+    }
+
+    @Override
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        recipe = (Recipe) savedInstanceState.getSerializable(RECIPE_DETAILS);
+
+        userSelectImage = savedInstanceState.getBoolean(USER_SELECT_IMG);
+
+        if (userSelectImage)
+            filePath = savedInstanceState.getParcelable(FILE_PATH);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        InitializeActivity();
+        fillWithExistedData();
+
         registerReceiver(netStateReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-        //create intent filter and register receiver to get battery info changes
         registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(netStateReceiver);
 
-        //unregister receivers
+        unregisterReceiver(netStateReceiver);
         unregisterReceiver(batteryInfoReceiver);
     }
 
-    /*----------------------------------------------------------------*/
+
+    /*--------------------INITIALIZATION------------------------------*/
     public void InitializeActivity() {
-        findViewsByIds();
+
+        initList(instructions, recipe.getInstructions());
+        initList(ingredients, recipe.getIngredients());
 
         //listener for insert instruction
         final TextInputLayout textInputLayout = findViewById(R.id.textInput_instruction);
@@ -123,7 +173,9 @@ public class AddRecipeActivity extends AppCompatActivity {
         ingredientsAdapter = new IngredientsAdapter(this, ingredients, ingredientsRecycler);
         ingredientsRecycler.setAdapter(ingredientsAdapter);
 
+        //for type
         populateDropdown();
+
     }
 
     private void findViewsByIds() {
@@ -132,6 +184,18 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         instructionsRecycler = findViewById(R.id.InstructionsRecyclerView);
         ingredientsRecycler = findViewById(R.id.IngredientsRecyclerView);
+
+        descriptionView = (TextInputEditText) findViewById(R.id.description);
+        typeView = (AutoCompleteTextView) findViewById(R.id.dropdown);
+        recipeNameView = findViewById(R.id.et_recipe_name);
+
+        imageView = findViewById(R.id.UploadedImage);
+
+        descriptionLayout = findViewById(R.id.outlinedTextField);
+        typeLayout = findViewById(R.id.spinner_mealType);
+        instructionsLayout = findViewById(R.id.textInput_instruction);
+        ingredientsLayout = findViewById(R.id.textInput_ingredient);
+
     }
 
     public void addInstruction() {
@@ -152,22 +216,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArrayList("ingredients", ingredients);
-        outState.putStringArrayList("instructions", instructions);
-
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null) {
-            instructions = (ArrayList<String>) savedInstanceState.get(INSTRUCTIONS_FIELD_NAME);
-            ingredients = (ArrayList<String>) savedInstanceState.get(INGREDIENTS_FIELD_NAME);
-        }
-    }
 
     private void populateDropdown() {
 
@@ -184,18 +232,32 @@ public class AddRecipeActivity extends AppCompatActivity {
         editTextFilledExposedDropdown.setAdapter(adapter);
     }
 
-    @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setMessage("Are you sure you want to exit? Any entered data will be lost")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        AddRecipeActivity.super.onBackPressed();
-                    }
-                })
-                .setNegativeButton("No", null)
-                .show();
+    private void fillWithExistedData() {
+        recipeNameView.setText(recipe.getRecipeName());
+        descriptionView.setText(recipe.getDescription());
+        typeView.setText(typeView.getAdapter().getItem(recipe.getType().ordinal()).toString(), false);
+
+        if (recipe.getImageUrl().equals("")) {
+            imageView.setImageDrawable(null);
+            if (filePath != null) {
+                setImageInHeader();
+            }
+        } else
+            Picasso.get().load(recipe.getImageUrl()).into(imageView);
+
+
+    }
+
+
+    private void setImageInHeader() {
+        try {
+            // Setting image on image view using Bitmap
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            // Log the exception
+            e.printStackTrace();
+        }
     }
 
     /*-------------------BUTTONS-HANDLERS-----------------------------*/
@@ -203,6 +265,8 @@ public class AddRecipeActivity extends AppCompatActivity {
     // Select image btn pressed
     public void onSelectImage(View view) {
         // Defining Implicit Intent to mobile gallery
+        if (callingActivity == ActivityConstants.ACTIVITY_DETAILS)
+            recipe.setImageUrl("");
         userSelectImage = true;
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -213,32 +277,10 @@ public class AddRecipeActivity extends AppCompatActivity {
     //save btn pressed
     public void onSave(View view) {
 
-        TextInputLayout description = findViewById(R.id.outlinedTextField);
-        String descriptionText = ((TextInputEditText) findViewById(R.id.description)).getEditableText().toString();
-        TextInputLayout type = findViewById(R.id.spinner_mealType);
-        String typeText = ((AutoCompleteTextView) findViewById(R.id.dropdown)).getEditableText().toString();
-        EditText recipeName = findViewById(R.id.et_recipe_name);
-        String recipeNameText = recipeName.getEditableText().toString();
-        String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
-        TextInputLayout instructionsLayout = findViewById(R.id.textInput_instruction);
-        TextInputLayout ingredientsLayout = findViewById(R.id.textInput_ingredient);
+        saveUserInput();
 
-        description.setErrorEnabled(false);
-        type.setErrorEnabled(false);
-        recipeName.setError(null);
-        instructionsLayout.setErrorEnabled(false);
-        ingredientsLayout.setErrorEnabled(false);
-
-        if (descriptionText.isEmpty() || typeText.isEmpty() || recipeNameText.isEmpty() || ingredients.isEmpty() || instructions.isEmpty()) {
-
-            if (descriptionText.isEmpty()) description.setError("Please enter description");
-            if (typeText.isEmpty()) type.setError("Please choose a type");
-            if (recipeNameText.isEmpty()) recipeName.setError("Please enter a recipe name");
-            if (instructions.isEmpty()) instructionsLayout.setError("Please add instructions");
-            if (ingredients.isEmpty()) ingredientsLayout.setError("Please add ingredients");
-            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_LONG).show();
+        if (thereAreEmptyFields())
             return;
-        }
 
         new FancyGifDialog.Builder(this)
                 .setTitle(R.string.save_dialog_title) // You can also send title like R.string.from_resources
@@ -255,30 +297,35 @@ public class AddRecipeActivity extends AppCompatActivity {
                     if (!NetworkStateReceiver.isOff()) {
                         Toast.makeText(AddRecipeActivity.this, R.string.recipe_submitted, Toast.LENGTH_SHORT).show();
 
-                        Collections.reverse(ingredients);
-                        Collections.reverse(instructions);
+                        String userUid = AuthGoogleService.getInstance().getFirebaseCurrentUser().getUid();
 
-                        Recipe recipe = new Recipe(recipeNameText, descriptionText, ingredients, instructions, typeText);
+                        if (callingActivity == ActivityConstants.ACTIVITY_MAIN)
+                            recipe.setId(UUID.randomUUID().toString());
 
+                        setRecipeDetails();
 
-                        String recipeId = UUID.randomUUID().toString();
                         //add new recipe to database
-                        RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipeId).setValue(recipe);
+                        RealTimeDBService.getInstance().getReferenceToRecipe(userUid, recipe.getId()).setValue(recipe);
 
                         //foreground service
                         if (userSelectImage) {
                             Intent intent = new Intent(this, UploadImageToCloudService.class);
 
                             intent.putExtra(FILE_PATH, filePath);
-                            intent.putExtra(RECIPE_ID, recipeId);
+                            intent.putExtra(RECIPE_ID, recipe.getId());
                             intent.putExtra(USER_UID, userUid);
 
                             //add image to storage cloud and then update imageUrl in DB
                             startForegroundService(intent);
                         }
+                        if (callingActivity == ActivityConstants.ACTIVITY_DETAILS) {
+                            Intent intent = new Intent();
+                            intent.putExtra(RECIPE_DETAILS, recipe);
+                            setResult(RESULT_OK, intent);
+                        }
 
-                        //back to main activity
                         finish();
+
                     } else
                         Toast.makeText(this, "Network OFF, try letter", Toast.LENGTH_LONG).show();
 
@@ -286,6 +333,64 @@ public class AddRecipeActivity extends AppCompatActivity {
                 .OnNegativeClicked(() -> Toast.makeText(AddRecipeActivity.this, "Submission canceled", Toast.LENGTH_SHORT).show())
                 .build();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to exit? Any entered data will be lost")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        AddRecipeActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+    /*-------------------HELPERS--------------------------------------*/
+
+    private boolean thereAreEmptyFields() {
+        descriptionLayout.setErrorEnabled(false);
+        typeLayout.setErrorEnabled(false);
+        recipeNameView.setError(null);
+        instructionsLayout.setErrorEnabled(false);
+        ingredientsLayout.setErrorEnabled(false);
+
+        if (descriptionText.isEmpty() || typeText.isEmpty() || recipeNameText.isEmpty() || ingredients.isEmpty() || instructions.isEmpty()) {
+
+            if (descriptionText.isEmpty()) descriptionLayout.setError("Please enter description");
+            if (typeText.isEmpty()) typeLayout.setError("Please choose a type");
+            if (recipeNameText.isEmpty()) recipeNameView.setError("Please enter a recipe name");
+            if (instructions.isEmpty()) instructionsLayout.setError("Please add instructions");
+            if (ingredients.isEmpty()) ingredientsLayout.setError("Please add ingredients");
+            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
+
+    private void saveUserInput() {
+        descriptionText = descriptionView.getEditableText().toString();
+        typeText = typeView.getEditableText().toString();
+        recipeNameText = recipeNameView.getEditableText().toString();
+
+    }
+
+    private void setRecipeDetails() {
+        Collections.reverse(ingredients);
+        Collections.reverse(instructions);
+        recipe.setRecipeName(recipeNameText);
+        recipe.setDescription(descriptionText);
+        recipe.setIngredients(ingredients);
+        recipe.setInstructions(instructions);
+        recipe.setType(Recipe.MealType.valueOf(typeText));
+    }
+
+    private void initList(ArrayList<String> list, ArrayList<String> newList) {
+        list.clear();
+        list.addAll(newList);
+        Collections.reverse(list);
     }
 
     /*----------------------------------------------------------------*/
@@ -306,14 +411,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                 && data.getData() != null) {
             // Get the Uri of data
             filePath = data.getData();
-            try {
-                // Setting image on image view using Bitmap
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                image.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                // Log the exception
-                e.printStackTrace();
-            }
+            setImageInHeader();
         } else
             userSelectImage = false;
 

@@ -52,11 +52,13 @@ public class Recipe implements Serializable {
     }
 
     public void setIngredients(ArrayList<String> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredients.clear();
+        this.ingredients.addAll(ingredients);
     }
 
     public void setInstructions(ArrayList<String> instructions) {
-        this.instructions = instructions;
+        this.instructions.clear();
+        this.instructions.addAll(instructions);
     }
     public void setType(MealType type) {
         this.type = type;

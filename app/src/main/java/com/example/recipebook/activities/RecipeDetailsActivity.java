@@ -22,6 +22,7 @@ import com.example.recipebook.firebase.AuthGoogleService;
 import com.example.recipebook.firebase.RealTimeDBService;
 import com.example.recipebook.R;
 import com.example.recipebook.entities.Recipe;
+import com.example.recipebook.utils.ActivityConstants;
 import com.example.recipebook.utils.SharedPreferenceFileHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 
+import static com.example.recipebook.utils.Constants.CALLING_ACTIVITY;
 import static com.example.recipebook.utils.Constants.INGREDIENTS_FIELD_NAME;
 import static com.example.recipebook.utils.Constants.INSTRUCTIONS_FIELD_NAME;
 import static com.example.recipebook.utils.Constants.RECIPE_DETAILS;
@@ -66,7 +68,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
-        netStateReceiver = new NetworkStateReceiver();
+        netStateReceiver = NetworkStateReceiver.getInstance();
 
         //From Intent
         recipe = (Recipe) getIntent().getSerializableExtra(RECIPE_DETAILS);
@@ -167,6 +169,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
 
     private void setList(ArrayList<String> items, LinearLayout itemsLl) {
         TextView textView;
+        itemsLl.removeAllViewsInLayout();
         for (String item : items) {
             textView = getTextView(item);
             itemsLl.addView(textView);
@@ -236,8 +239,9 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
     }
 
     private void handleEditButton() {
-        Intent intent = new Intent(this, EditRecipeActivity.class);
+        Intent intent = new Intent(this, AddRecipeActivity.class);
         intent.putExtra(RECIPE_DETAILS, recipe);
+        intent.putExtra(CALLING_ACTIVITY, ActivityConstants.ACTIVITY_DETAILS);
         startActivityForResult(intent, EDIT_CODE_ID);
     }
 

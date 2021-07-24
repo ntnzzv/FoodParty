@@ -17,11 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.recipebook.firebase.AuthGoogleService;
 
 import com.example.recipebook.broadcastreceivers.NetworkStateReceiver;
+import com.example.recipebook.utils.ActivityConstants;
+import com.example.recipebook.utils.Constants;
 import com.example.recipebook.viewmodel.RecipesViewModel;
 import com.example.recipebook.R;
 import com.example.recipebook.adapters.RecipesAdapter;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
+import static com.example.recipebook.utils.Constants.CALLING_ACTIVITY;
 import static com.example.recipebook.utils.Constants.USER_SIGNED;
 
 
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         setRecyclerViewAdapter();
 
         //Broadcast receiver for network state
-        netStateReceiver = new NetworkStateReceiver();
+        netStateReceiver = NetworkStateReceiver.getInstance();
     }
 
 
@@ -157,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
     public void onAddRecipe(View view) {
         if (userAlreadySignedFlag) {
             Intent intent = new Intent(this, AddRecipeActivity.class);
+            intent.putExtra(CALLING_ACTIVITY, ActivityConstants.ACTIVITY_MAIN);
             startActivity(intent);
         } else
             openLoginActivity();

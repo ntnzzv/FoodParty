@@ -9,9 +9,19 @@ import com.example.recipebook.R;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
 
 public class BatteryInfoReceiver extends BroadcastReceiver {
+    private boolean show ;
+    private float criticalPercent ;
+    private static BatteryInfoReceiver batteryInfoReceiverInstance = null;
 
-    private boolean show = true;
-    private float criticalPercent = 30;
+    public static BatteryInfoReceiver getInstance() {
+        if (batteryInfoReceiverInstance == null)
+            batteryInfoReceiverInstance = new BatteryInfoReceiver();
+        return batteryInfoReceiverInstance;
+    }
+
+    public BatteryInfoReceiver() {
+        init();
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -26,7 +36,7 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
         float batteryPercent = getBatteryPercent(level, scale);
 
         if (show && batteryPercent < criticalPercent && !isCharging) {
-            setNewCriticalPercent();
+
             new FancyGifDialog.Builder(context)
                     .setTitle("Low battery")
                     .setMessage("Please charge your battery or save your recipe, it may be lost")
@@ -39,29 +49,27 @@ public class BatteryInfoReceiver extends BroadcastReceiver {
                     .setGifResource(R.drawable.low_battery_gif)
                     .isCancellable(true)
                     .OnPositiveClicked(() -> {
+                        criticalPercent = 10;
                     })
                     .OnNegativeClicked(() -> {
+                        show = false;
                     })
                     .build();
 
 
         }
+        if(isCharging || batteryPercent>20)
+            init();
 
-        if (batteryPercent > 15)
-            show=true;
-        if (batteryPercent > 30) {
-            criticalPercent = 30;
-        }
+
 
     }
 
-    private void setNewCriticalPercent() {
-        if (criticalPercent == 30)
-            criticalPercent = 15;
-        else //=15
-            show = false;
-
+    private void init() {
+        show=true;
+        criticalPercent=20;
     }
+
 
     private float getBatteryPercent(int level, float scale) {
         return level * 100 / scale;
