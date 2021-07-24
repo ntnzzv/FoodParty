@@ -3,6 +3,7 @@ package com.example.recipebook.activities;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Broadcast receiver for network state
         netStateReceiver = NetworkStateReceiver.getInstance();
+
     }
 
 
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(netStateReceiver);
 
     }
+
 
     /*----------------------------------------------------------------*/
     private void setRecyclerViewAdapter() {

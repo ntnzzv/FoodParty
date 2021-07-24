@@ -20,12 +20,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 
-public class RecipesViewModel extends AndroidViewModel {
+public class RecipesViewModel extends AndroidViewModel implements Serializable {
 
     private MutableLiveData<List<User>> usersLiveData;
     private MutableLiveData<List<Recipe>> favoritesRecipesLiveData;
@@ -295,8 +296,9 @@ public class RecipesViewModel extends AndroidViewModel {
     }
 
     public void filter(String query) {
+
         searchResultsList.clear();
-        if (query.isEmpty() || query == null) {
+        if ( query == null || query.isEmpty()) {
             searchResultsList.addAll(allRecipesList);
         } else {
             query = query.toLowerCase();
