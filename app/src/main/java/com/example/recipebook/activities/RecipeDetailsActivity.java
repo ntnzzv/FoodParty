@@ -200,8 +200,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
         switch (type) {
             case Breakfast:
                 return R.drawable.breakfast_icon;
-            case Brunch:
-                return R.drawable.brunch_icon;
+            case Lunch:
+                return R.drawable.lunch_icon;
             case Dessert:
                 return R.drawable.dessert_icon;
             case Dinner:

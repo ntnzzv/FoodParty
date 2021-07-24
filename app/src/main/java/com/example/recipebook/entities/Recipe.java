@@ -17,7 +17,7 @@ public class Recipe implements Serializable {
 
     public enum MealType {
         Breakfast,
-        Brunch,
+        Lunch,
         Dinner,
         Dessert,
         Undefined
