@@ -153,7 +153,9 @@ public class RecipeDetailsActivity extends AppCompatActivity implements View.OnC
             imageView.setBackgroundResource(R.drawable.no_image);
         }
         else
-            Picasso.get().load(recipe.getImageUrl()).into(imageView);
+            Picasso.get().load(recipe.getImageUrl()).fit().centerCrop()
+                    .placeholder(R.drawable.no_image)
+                    .into(imageView);
 
         setToolbar();
 
