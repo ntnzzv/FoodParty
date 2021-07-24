@@ -143,7 +143,6 @@ public class RecipesViewModel extends AndroidViewModel {
         usersDBReference.addChildEventListener(new UserEventListener());
     }
 
-
     /*----------------------------------------------------------------*/
     private void initializeVariables() {
         usersList = new ArrayList<>();

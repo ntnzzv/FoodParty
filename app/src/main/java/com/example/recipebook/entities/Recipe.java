@@ -22,6 +22,7 @@ public class Recipe implements Serializable {
         Dessert,
         Undefined
     }
+
     public Recipe(String recipeName, String description, ArrayList<String> ingredients, ArrayList<String> instructions, String type) {
         this.recipeName = recipeName;
         this.description = description;

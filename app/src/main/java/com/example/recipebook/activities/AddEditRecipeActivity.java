@@ -136,7 +136,7 @@ public class AddEditRecipeActivity extends AppCompatActivity {
         super.onResume();
 
         InitializeActivity();
-        fillWithExistedData();
+        fillViewsWithExistingData();
 
         registerReceiver(netStateReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -234,7 +234,7 @@ public class AddEditRecipeActivity extends AppCompatActivity {
         editTextFilledExposedDropdown.setAdapter(adapter);
     }
 
-    private void fillWithExistedData() {
+    private void fillViewsWithExistingData() {
         recipeNameView.setText(recipe.getRecipeName());
         descriptionView.setText(recipe.getDescription());
         typeView.setText(typeView.getAdapter().getItem(recipe.getType().ordinal()).toString(), false);
@@ -246,7 +246,6 @@ public class AddEditRecipeActivity extends AppCompatActivity {
             }
         } else
             Picasso.get().load(recipe.getImageUrl()).into(imageView);
-
 
     }
 
@@ -329,7 +328,7 @@ public class AddEditRecipeActivity extends AppCompatActivity {
                         finish();
 
                     } else
-                        Toast.makeText(this, "Network OFF, try letter", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Network OFF, try later", Toast.LENGTH_LONG).show();
 
                 })
                 .OnNegativeClicked(() -> Toast.makeText(AddEditRecipeActivity.this, "Submission canceled", Toast.LENGTH_SHORT).show())
