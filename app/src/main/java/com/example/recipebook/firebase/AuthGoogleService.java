@@ -33,12 +33,9 @@ public class AuthGoogleService {
         return GoogleSignIn.getClient(context, gso);
     }
 
-
     public FirebaseAuth getFirebaseAuth() {
         return firebaseAuth;
     }
-
-
 
     public FirebaseUser getFirebaseCurrentUser() {
         return firebaseAuth.getCurrentUser();

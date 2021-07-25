@@ -103,7 +103,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         if (viewModel.getShowOnlyMyRecipesFlag().getValue()) {
             recipes.forEach(recipe ->
             {
-                if (AuthGoogleService.currentUserCreateThisRecipe(recipe))
+                if (AuthGoogleService.userSigned() && AuthGoogleService.currentUserCreateThisRecipe(recipe))
                     presentedRecipes.add(recipe);
             });
         } else
