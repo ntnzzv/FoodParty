@@ -1,5 +1,8 @@
 
 
+
+
+
 # Recipes Android Application
 
 This application was made under a course focusing on Android development as the final project.
@@ -11,7 +14,7 @@ This application was made under a course focusing on Android development as the 
 A step by step video demonstration of the features included in the application:
 
 
-![Application demonstration link](https://user-images.githubusercontent.com/56848492/127013161-27362ac6-0ae0-4f29-b84c-cede3c2622a4.mov)
+https://user-images.githubusercontent.com/56848492/127044348-71b4d48a-4732-4a73-ab6c-92f219660304.mp4
 
 
 
