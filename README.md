@@ -11,7 +11,7 @@ This application was made under a course focusing on Android development as the 
 A step by step video demonstration of the features included in the application:
 
 
-![App](https://user-images.githubusercontent.com/56848492/127013161-27362ac6-0ae0-4f29-b84c-cede3c2622a4.mov)
+![Application demonstration link](https://user-images.githubusercontent.com/56848492/127013161-27362ac6-0ae0-4f29-b84c-cede3c2622a4.mov)
 
 
 
