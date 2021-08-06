@@ -22,6 +22,7 @@ https://user-images.githubusercontent.com/56848492/127044348-71b4d48a-4732-4a73-
 
 * [Java](https://docs.oracle.com/en/java/)
 * [Material UI](https://material.io/develop/android)
+* [Firebase](https://firebase.google.com/docs)
 
 ## Authors
 
